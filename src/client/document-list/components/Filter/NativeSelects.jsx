@@ -23,17 +23,18 @@ export default function NativeSelects(props) {
   const [state, setState] = React.useState({
     type: props.values[1],
   });
-
+  const [age, setAge] = React.useState(props.select);
   const data=[...props.values];
   const handleChange = (event) => {
-    setState({
-      type: event.target.value,
-    });
+    setAge(event.target.value);
     const valeur =data[event.target.value];
     props.typeChange(valeur)
    
   };
-
+  const reset = ()=>{
+    setAge(0);
+  }
+ console.log("valeur de props  "+props.label+" val "+props.select);
   return (
     <div >
       <FormControl required className={classes.formControl}>
@@ -41,7 +42,7 @@ export default function NativeSelects(props) {
         <Select
            labelId="demo-simple-select-helper-label"
            id="demo-simple-select-helper"
-          value={state.type}
+          value={age}
           fullWidth={true}
           onChange={handleChange}
           name="type"

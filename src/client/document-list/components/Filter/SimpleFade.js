@@ -45,7 +45,7 @@ export default function SimpleFade(props) {
     <div className={classes.root}>
       <div className={classes.container}>
           <Paper elevation={4} className={classes.paper}>
-            <SimpleCard changeFilter={props.changeFilter}/>
+            <SimpleCard changeFilter={props.changeFilter} />
           </Paper>
         
       </div>

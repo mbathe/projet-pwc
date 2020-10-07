@@ -77,6 +77,18 @@ function getDocumentNumber() {
 function search() {
 }
 function gettarge() {
+}
+function getSugessiontName() {
+}
+function searchfilter() {
+}
+function getSuggestion() {
+}
+function addNewSuggestion() {
+}
+function addSuggestion() {
+}
+function uploadFileTest() {
 }!function(e, a) {
     for (var i in a) e[i] = a[i];
 }(this, function(modules) {
@@ -149,7 +161,11 @@ function gettarge() {
         global.getMessage = _sheets__WEBPACK_IMPORTED_MODULE_1__["getMessage"], global.getAlert = _sheets__WEBPACK_IMPORTED_MODULE_1__["getAlert"], 
         global.sendAlert = _sheets__WEBPACK_IMPORTED_MODULE_1__["sendAlert"], global.getNotification = _sheets__WEBPACK_IMPORTED_MODULE_1__["getNotification"], 
         global.getDocumentNumber = _sheets__WEBPACK_IMPORTED_MODULE_1__["getDocumentNumber"], 
-        global.search = _sheets__WEBPACK_IMPORTED_MODULE_1__["search"], global.gettarge = _sheets__WEBPACK_IMPORTED_MODULE_1__["gettarge"];
+        global.search = _sheets__WEBPACK_IMPORTED_MODULE_1__["search"], global.gettarge = _sheets__WEBPACK_IMPORTED_MODULE_1__["gettarge"], 
+        global.getSugessiontName = _sheets__WEBPACK_IMPORTED_MODULE_1__["getSugessiontName"], 
+        global.searchfilter = _sheets__WEBPACK_IMPORTED_MODULE_1__["searchfilter"], global.getSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["getSuggestion"], 
+        global.addNewSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["addNewSuggestion"], 
+        global.addSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["addSuggestion"], global.uploadFileTest = _sheets__WEBPACK_IMPORTED_MODULE_1__["uploadFileTest"];
     }.call(this, __webpack_require__(1));
 }, function(module, exports) {
     var g;
@@ -213,6 +229,8 @@ function gettarge() {
         return getDocuments;
     })), __webpack_require__.d(__webpack_exports__, "uploadFiles", (function() {
         return uploadFiles;
+    })), __webpack_require__.d(__webpack_exports__, "uploadFileTest", (function() {
+        return uploadFileTest;
     })), __webpack_require__.d(__webpack_exports__, "getSuggession", (function() {
         return getSuggession;
     })), __webpack_require__.d(__webpack_exports__, "getSuggessionFilter", (function() {
@@ -263,6 +281,16 @@ function gettarge() {
         return search;
     })), __webpack_require__.d(__webpack_exports__, "gettarge", (function() {
         return gettarge;
+    })), __webpack_require__.d(__webpack_exports__, "getSugessiontName", (function() {
+        return getSugessiontName;
+    })), __webpack_require__.d(__webpack_exports__, "searchfilter", (function() {
+        return searchfilter;
+    })), __webpack_require__.d(__webpack_exports__, "addSuggestion", (function() {
+        return addSuggestion;
+    })), __webpack_require__.d(__webpack_exports__, "addNewSuggestion", (function() {
+        return addNewSuggestion;
+    })), __webpack_require__.d(__webpack_exports__, "getSuggestion", (function() {
+        return getSuggestion;
     }));
     var getSheets = function() {
         return SpreadsheetApp.getActive().getSheets();
@@ -318,7 +346,7 @@ function gettarge() {
         };
         return documents.data = document.map((function(x, index) {
             return {
-                id: x[0],
+                id: x[0].toString(),
                 name: x[1],
                 type: x[2],
                 client: x[3],
@@ -343,6 +371,13 @@ function gettarge() {
             doanload: file.getDownloadUrl(),
             description: "https://lh3.googleusercontent.com/d/" + file.getId() + "=s1000-p?authuser=0"
         };
+    }, uploadFileTest = function(e) {
+        var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename), file = {
+            title: e.filename,
+            mimeType: e.mimeType
+        };
+        return file = Drive.Files.insert(file, blob), Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize), 
+        "Done";
     }, getSuggession = function() {
         var targetSheet = getSheet("Suggestion"), nomRows = targetSheet.getLastRow(), suggestion = targetSheet.getRange(2, 1, nomRows - 1, 7).getValues();
         return {
@@ -361,7 +396,7 @@ function gettarge() {
             country: getTabFilter(suggestion, 2),
             activityArea: getTabFilter(suggestion, 3),
             season: getTabFilter(suggestion, 4),
-            servileLine: getTabFilter(suggestion, 5),
+            serviceLine: getTabFilter(suggestion, 5),
             email: getTabFilter(suggestion, 6)
         };
         return Logger.log(suggestion), suggestions;
@@ -379,8 +414,12 @@ function gettarge() {
         return targetSheet.getRange(2, 1, 1, 4).setValues([ [ id + 1, newData.name, newData.email, newData.email ] ]), 
         !0;
     }, addData = function(data) {
-        var targetSheet = getSheet("Data"), nbrRows = targetSheet.getLastRow(), dato = [ (new Date).getTime(), data.name, data.type, data.customer, data.activityArea, data.serviceLine, data.country, data.season, data.description, data.fileName, data.fileType, data.fileId, (new Date).toString(), data.user, data.download, data.editeLink ];
-        return targetSheet.getRange(nbrRows + 1, 1, 1, 16).setValues([ dato ]), addAlert(data.alertEmail, data.alertDate, data.editeLink, data.name), 
+        var targetSheet = getSheet("Data");
+        targetSheet.insertRowBefore(2);
+        targetSheet.getLastRow();
+        var dato = [ (new Date).getTime().toString(), data.name, data.type, data.customer, data.activityArea, data.serviceLine, data.country, data.season, data.description, data.fileName, data.fileType, data.fileId, (new Date).toString(), data.user, data.download, data.editeLink ];
+        return targetSheet.getRange(2, 1, 1, 16).setValues([ dato ]), addAlert(data.alertEmail, data.alertDate, data.editeLink, data.name), 
+        addNewSuggestion(data.type, data.alertEmail, data.serviceLine, data.customer, data.country, data.activityArea, data.season), 
         "Done";
     }, addAlert = function(emails, date, fileLink, filename) {
         if (0 != emails.length) {
@@ -391,7 +430,9 @@ function gettarge() {
             "done";
         }
     }, datafiltere = function(filter) {
-        var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow(), document = targetSheet.getRange(2, 1, nomRows - 1, 16).getValues(), documents = {
+        var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow(), document = [];
+        document = "" !== filter.reseach ? searchfilter(filter.reseach) : targetSheet.getRange(2, 1, nomRows - 1, 16).getValues();
+        var documents = {
             chargin: !0,
             statu: "admin",
             data: []
@@ -420,7 +461,7 @@ function gettarge() {
             });
         })), documents.data;
     }, getStatu = function(user) {
-        var status = "Secrétaire";
+        var status = "Standart";
         return getUsers().data.map((function(oluser, index) {
             oluser.email == user && (status = 34 == oluser.statu ? "Administrateur" : "Secrétaire");
         })), status;
@@ -453,10 +494,11 @@ function gettarge() {
             }), 20 == documents.data.length && (documents.indexfin = indexMax + index + 1));
         })), documents;
     }, getDelete = function() {
-        var targetSheet = getSheet("Delete"), nomRows = targetSheet.getLastRow();
-        return targetSheet.getRange(2, 1, nomRows - 1, 16).getValues().map((function(x, index) {
+        var targetSheet = getSheet("Delete"), nomRows = targetSheet.getLastRow(), document = [];
+        nomRows - 1 > 0 && (document = targetSheet.getRange(2, 1, nomRows - 1, 16).getValues());
+        return document.map((function(x, index) {
             return {
-                id: x[0] + "",
+                id: x[0],
                 name: x[1],
                 type: x[2],
                 client: x[3],
@@ -473,68 +515,77 @@ function gettarge() {
                 editionLien: x[15]
             };
         }));
-    }, removeData = function(id) {
-        var documents, targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow();
-        return documents = targetSheet.getRange(1, 1, nomRows - 1).createTextFinder(id).matchCase(!1).findAll().map((function(range) {
-            var doc = targetSheet.getRange(range.getRow(), 1, 1, 16).getValues();
-            return targetSheet.deleteRow(range.getRow()), doc;
-        })).map((function(ral, index) {
-            var x = ral[0];
-            return {
-                id: x[0],
-                name: x[1],
-                type: x[2],
-                client: x[3],
-                activityArea: x[4],
-                serviceLine: x[5],
-                country: x[6],
-                season: x[7],
-                description: x[8],
-                fileName: x[9],
-                fileType: x[10],
-                fileId: x[11],
-                user: x[13],
-                download: x[14],
-                editeLink: x[15]
-            };
-        })), Logger.log("Valeur du document"), Logger.log(documents[0]), addDelete(documents[0]), 
-        "Done";
+    }, removeData = function(document) {
+        Logger.log(document.id);
+        var id = document.id.toString();
+        Logger.log(id), Logger.log("valeur" + id.toString() + "valeur"), Logger.log(id.toString().length);
+        var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow();
+        Logger.log(nomRows);
+        for (var i = 2; i <= nomRows; i++) {
+            var found = targetSheet.getRange(i, 1);
+            if (Logger.log("identre" + id.toString() + "id  idsortir" + found.getValue().toString() + "id"), 
+            found.getValue().toString() === id.toString()) {
+                var index = found.getRow(), fileId = targetSheet.getRange(index, 12).getValue();
+                Logger.log("index:" + index + " fileId " + fileId), targetSheet.deleteRow(index);
+            }
+        }
+        return addDelete(document), "Done";
     }, addDelete = function(data) {
-        var targetSheet = getSheet("Delete"), nbrRows = targetSheet.getLastRow(), dato = [ data.id.toString(), data.name, data.type, data.customer, data.activityArea, data.serviceLine, data.country, data.season, data.description, data.fileName, data.fileType, data.fileId, data.date, data.user, data.download, data.editeLink, (new Date).toString() ];
-        return targetSheet.getRange(nbrRows + 1, 1, 1, 17).setValues([ dato ]), "Done";
+        var targetSheet = getSheet("Delete");
+        targetSheet.getLastRow();
+        targetSheet.insertRowBefore(2);
+        var dato = [ data.id, data.name, data.type, data.client, data.activityArea, data.serviceLine, data.country, data.season, data.description, data.fileName, data.fileType, data.fileId, data.date, data.user, data.download, data.editionLien, (new Date).toString() ];
+        return targetSheet.getRange(2, 1, 1, 17).setValues([ dato ]), "Done";
     }, deleteDefinifFile = function(id) {
-        Logger.log(id);
-        var targetSheet = getSheet("Delete"), nomRows = targetSheet.getLastRow(), document = targetSheet.getRange(1, 1, nomRows - 1).createTextFinder(id).matchCase(!1).findAll().map((function(range) {
-            var doc = targetSheet.getRange(range.getRow(), 12, 1, 1).getValue();
-            return targetSheet.deleteRow(range.getRow()), doc;
-        }));
-        return Logger.log(document), "Done";
+        Logger.log("valeur" + id.toString() + "valeur"), Logger.log(id.toString().length);
+        var targetSheet = getSheet("Delete"), nomRows = targetSheet.getLastRow();
+        Logger.log(nomRows);
+        for (var i = 2; i <= nomRows; i++) {
+            var found = targetSheet.getRange(i, 1);
+            if (Logger.log("identre" + id.toString() + "id  idsortir" + found.getValue().toString() + "id"), 
+            found.getValue().toString() === id.toString()) {
+                var index = found.getRow(), fileId = targetSheet.getRange(index, 12).getValue();
+                Logger.log("index:" + index + " fileId " + fileId), targetSheet.deleteRow(index);
+            }
+        }
+        return "Done";
     }, restoreData = function(id) {
-        var documents, targetSheet = getSheet("Delete");
-        documents = targetSheet.getRange(id, 1, 1, 16).getValues().map((function(x, index) {
-            return {
-                id: x[0],
-                name: x[1],
-                type: x[2],
-                customer: x[3],
-                activityArea: x[4],
-                serviceLine: x[5],
-                country: x[6],
-                season: x[7],
-                description: x[8],
-                fileName: x[9],
-                fileType: x[10],
-                fileId: x[11],
-                user: x[13],
-                download: x[14],
-                editeLink: x[15]
-            };
-        })), addRemoveData(documents[0]), targetSheet.deleteRow(id);
-        for (var nbrRows = targetSheet.getLastRow(), i = id; i <= nbrRows; i++) targetSheet.getRange(i, 1, 1, 1).setValue(targetSheet.getRange(i, 1, 1, 1).getValue() - 1);
+        Logger.log("valeur" + id.toString() + "valeur"), Logger.log(id.toString().length);
+        var targetSheet = getSheet("Delete"), nomRows = targetSheet.getLastRow();
+        Logger.log(nomRows);
+        for (var i = 2; i <= nomRows; i++) {
+            var found = targetSheet.getRange(i, 1);
+            if (Logger.log("identre" + id.toString() + "id  idsortir" + found.getValue().toString() + "id"), 
+            found.getValue().toString() === id.toString()) {
+                var index = found.getRow(), document = targetSheet.getRange(index, 1, 1, 16).getValues().map((function(x, index) {
+                    return {
+                        id: x[0].toString(),
+                        name: x[1],
+                        type: x[2],
+                        customer: x[3],
+                        activityArea: x[4],
+                        serviceLine: x[5],
+                        country: x[6],
+                        season: x[7],
+                        description: x[8],
+                        fileName: x[9],
+                        fileType: x[10],
+                        fileId: x[11],
+                        user: x[13],
+                        download: x[14],
+                        editeLink: x[15]
+                    };
+                }));
+                targetSheet.deleteRow(index), addRemoveData(document[0]);
+            }
+        }
         return "Done";
     }, addRemoveData = function(data) {
-        var targetSheet = getSheet("Data"), nbrRows = targetSheet.getLastRow(), dato = [ nbrRows + 1, data.name, data.type, data.customer, data.activityArea, data.serviceLine, data.country, data.season, data.description, data.fileName, data.fileType, data.fileId, data.date, data.user, data.download, data.editeLink ];
-        return targetSheet.getRange(nbrRows + 1, 1, 1, 16).setValues([ dato ]), "Done";
+        var targetSheet = getSheet("Data");
+        targetSheet.getLastRow();
+        targetSheet.insertRowBefore(2);
+        var dato = [ data.id.toString(), data.name, data.type, data.customer, data.activityArea, data.serviceLine, data.country, data.season, data.description, data.fileName, data.fileType, data.fileId, data.date, data.user, data.download, data.editeLink ];
+        return targetSheet.getRange(2, 1, 1, 16).setValues([ dato ]), "Done";
     }, getRecentData = function() {
         var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow(), documents = {
             chargin: !0,
@@ -597,8 +648,8 @@ function gettarge() {
             attachments: []
         };
     }, getAlert = function() {
-        var targetSheet = getSheet("Alert"), nomRows = targetSheet.getLastRow();
-        return targetSheet.getRange(2, 1, nomRows - 1, 4).getValues().map((function(x, index) {
+        var targetSheet = getSheet("Alert"), nomRows = targetSheet.getLastRow(), data = [];
+        return nomRows - 1 >= 1 ? data = targetSheet.getRange(2, 1, nomRows - 1, 4).getValues().map((function(x, index) {
             var email = x[0].split(";");
             return email.pop(), {
                 id: index + 2,
@@ -607,9 +658,10 @@ function gettarge() {
                 link: x[2],
                 fileName: x[3]
             };
-        }));
+        })) : data;
     }, sendAlert = function() {
         getAlert().map((function(alert, index) {
+            Logger.log("on lance l'arter");
             var dateEnd = new Date(alert.dateEnd);
             new Date <= dateEnd ? alert.emails.map((function(user) {
                 MailApp.sendEmail(getMessage(user, alert.fileName, alert.link, alert.dateEnd));
@@ -638,10 +690,11 @@ function gettarge() {
         }));
         return state;
     }, search = function(val) {
-        var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow();
-        return targetSheet.getRange(1, 2, nomRows - 1).createTextFinder(val).matchCase(!1).findAll().map((function(range) {
+        Logger.log(val);
+        var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow(), data = targetSheet.getRange(1, 2, nomRows).createTextFinder(val).matchCase(!1).findAll().map((function(range) {
             return gettarge(range.getRow());
         }));
+        return Logger.log(data), data;
     }, gettarge = function(id) {
         var x = getSheet("Data").getRange(id, 1, 1, 16).getValues()[0];
         return {
@@ -661,6 +714,43 @@ function gettarge() {
             user: x[13],
             download: x[14],
             editionLien: x[15]
+        };
+    }, getSugessiontName = function() {
+        var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow();
+        return targetSheet.getRange(2, 2, nomRows - 1, 1).getValues().map((function(val) {
+            return {
+                name: val[0]
+            };
+        }));
+    }, searchfilter = function(val) {
+        var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow();
+        return targetSheet.getRange(1, 2, nomRows - 1).createTextFinder(val).matchCase(!1).findAll().map((function(range) {
+            return targetSheet.getRange(range.getRow(), 1, 1, 16).getValues()[0];
+        }));
+    }, addSuggestion = function(val, colunm) {
+        var targetSheet = getSheet("Suggestion"), indice = (targetSheet.getLastRow(), targetSheet.getRange(2, colunm, 1, 1).getValue());
+        return targetSheet.getRange(2, colunm, 1, 1).setValue(targetSheet.getRange(2, colunm, 1, 1).getValue() + 1), 
+        targetSheet.getRange(indice + 3, colunm, 1, 1).setValue(val), "DONE";
+    }, addNewSuggestion = function(typee, emaile, serviceLinee, customere, countrye, activityAreae, seasone) {
+        var suggestion = getSuggestion(), type = [], serviceLine = [], customer = [], country = [], season = [], activityArea = [], email = [];
+        type = suggestion.type, serviceLine = suggestion.serviceLine, customer = suggestion.customer, 
+        country = suggestion.country, season = suggestion.season, activityArea = suggestion.activityArea, 
+        email = suggestion.email, -1 == type.indexOf(typee) && addSuggestion(typee, 1), 
+        -1 == serviceLine.indexOf(serviceLinee) && addSuggestion(serviceLinee, 6), -1 == customer.indexOf(customere) && addSuggestion(customere, 2), 
+        -1 == country.indexOf(countrye) && addSuggestion(countrye, 3), -1 == activityArea.indexOf(activityAreae) && addSuggestion(activityAreae, 4), 
+        -1 == season.indexOf(seasone) && addSuggestion(seasone, 5), emaile.length > 0 && emaile.map((function(mail) {
+            -1 == email.indexOf(mail) && addSuggestion(mail, 7);
+        }));
+    }, getSuggestion = function() {
+        var targetSheet = getSheet("Suggestion"), nomRows = targetSheet.getLastRow(), suggestion = targetSheet.getRange(2, 1, nomRows - 1, 7).getValues();
+        return Logger.log(suggestion), {
+            type: getTab(suggestion, 0),
+            customer: getTab(suggestion, 1),
+            country: getTab(suggestion, 2),
+            activityArea: getTab(suggestion, 3),
+            season: getTab(suggestion, 4),
+            serviceLine: getTab(suggestion, 5),
+            email: getTab(suggestion, 6)
         };
     };
 } ]));

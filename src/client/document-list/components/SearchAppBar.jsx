@@ -25,6 +25,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import According from './Filter/According';
 import server from '../../utils/server';
 import { TextField } from "@material-ui/core";
+import Tooltip from '@material-ui/core/Tooltip';
+
 
 
 const theme = createMuiTheme({
@@ -157,6 +159,13 @@ const useStyles = makeStyles(theme => ({
       display: 'none',
     },
   },
+  tooltip:{
+    fontSize: theme.typography.pxToRem(14),
+    labelContainer :{
+
+        fontSize: theme.typography.pxToRem(14),
+      }
+  }
 }));
 
 export default function PrimarySearchAppBar(props) {
@@ -166,8 +175,8 @@ export default function PrimarySearchAppBar(props) {
     email: '',
     imageUrl: '',
     name: '',
-  });
-
+  }); 
+const [autocomple,setAutocomple] =React.useState([]);
  const [notification,setNotification]=React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -175,6 +184,18 @@ export default function PrimarySearchAppBar(props) {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [valSearch,setValSearch]=React.useState("");
+  useEffect(
+    () => {
+      server
+        .getSugessiontName()
+        .then((val)=>{
+          setAutocomple(val)
+        })
+        .catch(alert);
+     
+    },
+    { data: [] }
+  );
 
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
@@ -205,7 +226,18 @@ export default function PrimarySearchAppBar(props) {
     getStatu(response.profileObj.email)
     .then((val)=>{
       console.log(val);
+      if(val==="Administrateur" || val==="Secrétaire"){
+        props.setEditCompte(true)
+      }
       props.setStatu(val);
+    })
+    .catch(alert);
+
+    const tabm =[response.profileObj.email];
+    server.
+    addSuggestion(tabm,7)
+    .then((val)=>{
+      console.log(val);
     })
     .catch(alert);
 
@@ -222,18 +254,34 @@ export default function PrimarySearchAppBar(props) {
    // console.log(e.target.value);
    if(value!==""){
     setValSearch(value);
+    console.log("valeur en temps reel1 "+valSearch)
    }else{
     setValSearch("");
    }
     
   };
   
+  const searchFilter=(val)=>{
+    var temps = {...val,reseach:valSearch}
+    props.changeFilter(temps);
+    console.log(temps);
+  }
+
   const search = ()=>{
-    console.log("veur de recherche "+valSearch);
+    console.log("veur de recherche2 "+valSearch);
     if(valSearch!==""){
       props.search(valSearch);    
     }else{
-     console.log("on conserve")
+     console.log("on conserve2")
+    }
+  }
+  const searcheSelect = (event,value,reason)=>{
+    console.log("veur de recherche3 "+value);
+    if(reason ==="select-option"){
+      props.search(value);    
+      setValSearch(value);
+    }else{
+     console.log("on conserve3")
     }
   }
 
@@ -293,11 +341,17 @@ export default function PrimarySearchAppBar(props) {
       </MenuItem>
     </Menu>
   );
-
-  console.log(props.open);
+  
+  const handleKeyPress = (event) => {
+    if(event.key === 'Enter'){
+      search();
+    }
+  }
+  
+  console.log(props.suggestionSelect);
   return (
     <ThemeProvider theme={theme}>
-      <div className={classes.grow}>
+      <div className={classes.grow} onKeyPress={handleKeyPress}>
         <AppBar
         >
           <Toolbar>
@@ -324,14 +378,13 @@ export default function PrimarySearchAppBar(props) {
          freeSolo
          fullWidth
          classes={{ inputRoot: classes.inputRoot }}
-         onChange={(event,value,reason)=>{console.log(value)}}
-        getOptionLabel={option => option.name}
-        options={props.dataSearch}
+         onChange={searcheSelect}
+        options={autocomple.map((option) => option.name)}
         onInputChange={change}
          renderInput={(params) => (
            <div style={{ display: "flex" }} ref={params.InputProps.ref}>
              <div style={{ paddingTop: 2 }}>
-               <According />
+               <According changeFilter={searchFilter} suggestion={props.suggestion} suggestionSelect={props.suggestionSelect} resetFilter={props.resetFilter}/>
              </div>
              <TextField
                fullWidth
@@ -345,7 +398,7 @@ export default function PrimarySearchAppBar(props) {
                <SearchIcon />
              </IconButton>
            </div>
-         )}
+         )} 
        />
      </div>
             {state.islogin == true && props.open==true &&<div className={classes.growopen2} />}
@@ -377,6 +430,7 @@ export default function PrimarySearchAppBar(props) {
             </div>
             {state.islogin == true && (
               <div className={classes.sectionDesktop}>
+              <Tooltip title={<div><Typography fontSize = {14}  variant='body2'>Compte Google</Typography><Typography fontSize = {8}  variant='body2' color='textSecondary'>{state.name}</Typography><Typography fontSize = {8}  variant='body2' color='textSecondary'>{state.email}</Typography></div>} className={classes.tooltip}>
                 <IconButton
                   edge="end"
                   aria-label="account of current user"
@@ -387,6 +441,7 @@ export default function PrimarySearchAppBar(props) {
                 >
                   <Avatar alt="Cindy Baker" src={state.imageUrl} />
                 </IconButton>
+                </Tooltip>
               </div>
             )}
             {state.islogin === false && (
@@ -409,8 +464,6 @@ export default function PrimarySearchAppBar(props) {
             )}
           </Toolbar>
         </AppBar>
-        {renderMobileMenu}
-        {renderMenu}
       </div>
     </ThemeProvider>
   );

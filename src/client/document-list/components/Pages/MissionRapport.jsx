@@ -171,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TitlebarGridList() {
+export default function TitlebarGridList(props) {
   const classes = useStyles();
   const [chargin,setChargin] = React.useState(true);
   const [theFirst,setTheFirst]=React.useState(true);
@@ -267,7 +267,7 @@ export default function TitlebarGridList() {
             {state.data.map((document, index) => (
               <div key={index}>
                 <Grid xl="auto">
-                  <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+                  <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
                 </Grid>
               </div>
             ))}

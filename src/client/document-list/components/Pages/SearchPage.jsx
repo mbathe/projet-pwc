@@ -233,7 +233,7 @@ export default function TitlebarGridList(props) {
     </div>}
       endMessage={
         <p style={{ textAlign: "center" }}>
-          <b>You have seen it all!</b>
+          
         </p>
       }
       // below props only if you need pull down functionality
@@ -261,7 +261,7 @@ export default function TitlebarGridList(props) {
             {state.data.map((document, index) => (
               <div key={index}>
                 <Grid xl="auto">
-                <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+                <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
                 </Grid>
               </div>
             ))}

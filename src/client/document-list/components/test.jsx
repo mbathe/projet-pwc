@@ -115,7 +115,7 @@ const uploadFile=(file)=>{
         bytes: [...new Int8Array(e.target.result)]
       };
       server
-      .uploadFiles(obj)
+      .uploadFileTest(obj)
       .then((val)=>{console.log(val)})
        .catch(alert);
    }  

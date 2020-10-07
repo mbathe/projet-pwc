@@ -103,7 +103,7 @@ export const getDocuments =(indexMax)=>{
   };
     documents.data =  document.map((x,index)=> {
      return {
-      id: x[0],
+      id: x[0].toString(),
       name : x[1],
       type : x[2],
       client :x[3],
@@ -157,6 +157,17 @@ Logger.log(val);
 }
 
 
+export const uploadFileTest = (e) =>{
+  var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
+  var file = {
+    title: e.filename,
+    mimeType: e.mimeType
+  };
+  file = Drive.Files.insert(file, blob);
+  Logger.log('ID: %s, File size (bytes): %s', file.id, file.fileSize);
+  return 'Done';
+}
+
 
 export const getSuggession =()=>{
   var targetSheet = getSheet("Suggestion");
@@ -187,7 +198,7 @@ export const getSuggessionFilter =()=>{
     country:getTabFilter(suggestion,2),
     activityArea:getTabFilter(suggestion,3),
     season:getTabFilter(suggestion,4),
-    servileLine:getTabFilter(suggestion,5),
+    serviceLine:getTabFilter(suggestion,5),
     email: getTabFilter(suggestion,6),
   
   };
@@ -234,11 +245,13 @@ export const setData =(data)=>{
 
 export const addData = (data)=>{
   var targetSheet = getSheet("Data");
+  targetSheet.insertRowBefore(2);
   var nbrRows = targetSheet.getLastRow();
   var date = new Date();
-  var dato=[date.getTime(),data.name, data.type,data.customer,data.activityArea,data.serviceLine,data.country,data.season,data.description,data.fileName,data.fileType,data.fileId,(new Date()).toString(),data.user,data.download,data.editeLink];
-  targetSheet.getRange(nbrRows+1,1,1,16).setValues([dato]);
+  var dato=[date.getTime().toString(),data.name, data.type,data.customer,data.activityArea,data.serviceLine,data.country,data.season,data.description,data.fileName,data.fileType,data.fileId,(new Date()).toString(),data.user,data.download,data.editeLink];
+  targetSheet.getRange(2,1,1,16).setValues([dato]);
   addAlert(data.alertEmail,data.alertDate,data.editeLink,data.name);     
+  addNewSuggestion(data.type,data.alertEmail,data.serviceLine,data.customer,data.country,data.activityArea,data.season);
   return "Done";
 }
 
@@ -256,14 +269,17 @@ export const addAlert =(emails,date,fileLink,filename)=>{
 }
 
 
-
-
-
-
 export const  datafiltere =(filter)=>{
   var targetSheet = getSheet("Data");
   var nomRows = targetSheet.getLastRow(); 
-  var document =  targetSheet.getRange(2,1,nomRows-1,16).getValues();
+   var document =[];
+  if(filter.reseach!==""){
+    document = searchfilter(filter.reseach);
+  }else{
+   document = targetSheet.getRange(2,1,nomRows-1,16).getValues();
+  }
+  
+ 
   var documents={
     chargin:true,
     statu: "admin",
@@ -321,18 +337,14 @@ export const  datafiltere =(filter)=>{
     }
   });
   return documents.data;
-
- 
     
  }
 
 
 
 
-
-
  export const getStatu = (user)=>{
-  var status="Secrétaire";
+  var status="Standart";
   var users =getUsers();
   users.data.map((oluser,index)=>{
     if(oluser.email==user){
@@ -394,11 +406,14 @@ export const getDelete =()=>{
   var targetSheet = getSheet("Delete");
   var nomRows = targetSheet.getLastRow();
   var document =[];
-  document =  targetSheet.getRange(2,1,nomRows-1,16).getValues();
+  if(nomRows-1>0){
+    document =  targetSheet.getRange(2,1,nomRows-1,16).getValues();
+  }
+  
   var documents=[];
     documents =  document.map((x,index)=> {
      return {
-      id: x[0]+"",
+      id: x[0],
       name : x[1],
       type : x[2],
       client :x[3],
@@ -421,101 +436,104 @@ export const getDelete =()=>{
 }
 
 
-export const removeData =(id)=>{
-   var targetSheet = getSheet("Data");
-   var nomRows = targetSheet.getLastRow();  
-   var found = targetSheet.getRange(1,1,nomRows-1).createTextFinder(id).matchCase(false).findAll();
-   var document=found.map((range)=>{
-          var doc = targetSheet.getRange(range.getRow(),1,1,16).getValues();
-           targetSheet.deleteRow(range.getRow());
-           return doc;
-       });
- 
-    var documents=[];
-      documents =  document.map((ral,index)=> {
-        var x= ral[0];
-       return {
-        id: x[0],
-        name : x[1],
-        type : x[2],
-        client :x[3],
-        activityArea:x[4],
-        serviceLine:x[5],
-        country:x[6],
-        season:x[7],
-        description:x[8],
-        fileName:x[9],
-        fileType:x[10],
-        fileId:x[11],
-        user:x[13],
-        download:x[14],
-        editeLink:x[15],
-        }
-    });
-    Logger.log("Valeur du document");
-    Logger.log(documents[0]);
-    addDelete(documents[0]);  
+export const removeData =(document)=>{
+
+  Logger.log(document.id);
+   var id = document.id.toString();
+   Logger.log(id);
+  Logger.log("valeur"+id.toString()+"valeur");
+  Logger.log(id.toString().length);
+  var targetSheet = getSheet("Data");
+  var nomRows = targetSheet.getLastRow();  
+  Logger.log(nomRows);
+for(var i=2;i<=nomRows;i++){
+ var found= targetSheet.getRange(i,1);
+ Logger.log("identre"+id.toString()+"id  idsortir"+found.getValue().toString()+"id");
+  if(found.getValue().toString()===id.toString()){
+  //targetSheet.deleteRow(range.getRow());
+    var index = found.getRow();
+    var fileId = targetSheet.getRange(index,12).getValue();
+    Logger.log("index:"+index +" fileId "+fileId);
+   // Drive.Files.remove(documents[0].fileId);
+     targetSheet.deleteRow(index);
+  }
+  
+}
+
+    addDelete(document);  
     return "Done"; 
   }
   export const addDelete = (data)=>{
     var targetSheet = getSheet("Delete");
     var nbrRows = targetSheet.getLastRow();
-    var dato=[data.id.toString(),data.name, data.type,data.customer,data.activityArea,data.serviceLine,data.country,data.season,data.description,data.fileName,data.fileType,data.fileId,data.date,data.user,data.download,data.editeLink,(new Date()).toString()];
-    targetSheet.getRange(nbrRows+1,1,1,17).setValues([dato]); 
+    targetSheet.insertRowBefore(2);
+    var dato=[data.id,data.name, data.type,data.client,data.activityArea,data.serviceLine,data.country,data.season,data.description,data.fileName,data.fileType,data.fileId,data.date,data.user,data.download,data.editionLien,(new Date()).toString()];
+    targetSheet.getRange(2,1,1,17).setValues([dato]); 
     return "Done";
   
   }  
 
 
   export const deleteDefinifFile =(id)=>{
-    Logger.log(id);
+    Logger.log("valeur"+id.toString()+"valeur");
+    Logger.log(id.toString().length);
     var targetSheet = getSheet("Delete");
     var nomRows = targetSheet.getLastRow();  
-   var found = targetSheet.getRange(1,1,nomRows-1).createTextFinder(id).matchCase(false).findAll();
-   var document=found.map((range)=>{
-          var doc = targetSheet.getRange(range.getRow(),12,1,1).getValue();
-           targetSheet.deleteRow(range.getRow());
-           return doc;
-       });
- 
+    Logger.log(nomRows);
+  for(var i=2;i<=nomRows;i++){
+   var found= targetSheet.getRange(i,1);
+   Logger.log("identre"+id.toString()+"id  idsortir"+found.getValue().toString()+"id");
+    if(found.getValue().toString()===id.toString()){
+    //targetSheet.deleteRow(range.getRow());
+      var index = found.getRow();
+      var fileId = targetSheet.getRange(index,12).getValue();
+      Logger.log("index:"+index +" fileId "+fileId);
+     // Drive.Files.remove(documents[0].fileId);
+     targetSheet.deleteRow(index);
+    }
     
-    Logger.log(document);
-   //Drive.Files.remove(documents[0].fileId);
-    return "Done";
+  }
+  return "Done";
    }
 
 
    export const restoreData =(id)=>{
 
+    Logger.log("valeur"+id.toString()+"valeur");
+    Logger.log(id.toString().length);
     var targetSheet = getSheet("Delete");
-      var document =[];
-      document =  targetSheet.getRange(id,1,1,16).getValues();
-      var documents=[];
-        documents =  document.map((x,index)=> {
-         return {
-          id: x[0],
-          name : x[1],
-          type : x[2],
-          customer :x[3],
-          activityArea:x[4],
-          serviceLine:x[5],
-          country:x[6],
-          season:x[7],
-          description:x[8],
-          fileName:x[9],
-          fileType:x[10],
-          fileId:x[11],
-          user:x[13],
-          download:x[14],
-          editeLink:x[15],
-          }
-      });
-      addRemoveData(documents[0]);
-     targetSheet.deleteRow(id);
-     var nbrRows = targetSheet.getLastRow();
-      for(var i=id;i<=nbrRows;i++){
-        targetSheet.getRange(i,1,1,1).setValue(targetSheet.getRange(i,1,1,1).getValue()-1); 
-      }
+    var nomRows = targetSheet.getLastRow();  
+    Logger.log(nomRows);
+  for(var i=2;i<=nomRows;i++){
+   var found= targetSheet.getRange(i,1);
+   Logger.log("identre"+id.toString()+"id  idsortir"+found.getValue().toString()+"id");
+    if(found.getValue().toString()===id.toString()){ 
+      var index = found.getRow();
+      var document =  targetSheet.getRange(index,1,1,16).getValues().map((x,index)=> {
+        return {
+         id: x[0].toString(),
+         name : x[1],
+         type : x[2],
+         customer :x[3],
+         activityArea:x[4],
+         serviceLine:x[5],
+         country:x[6],
+         season:x[7],
+         description:x[8],
+         fileName:x[9],
+         fileType:x[10],
+         fileId:x[11],
+         user:x[13],
+         download:x[14],
+         editeLink:x[15],
+         }
+     });
+     targetSheet.deleteRow(index);
+     addRemoveData(document[0]);
+    }
+    
+  }
+
       return "Done";
     
 }
@@ -523,8 +541,9 @@ export const addRemoveData =(data)=>{
 
       var targetSheet = getSheet("Data");
       var nbrRows = targetSheet.getLastRow();
-      var dato=[nbrRows+1,data.name, data.type,data.customer,data.activityArea,data.serviceLine,data.country,data.season,data.description,data.fileName,data.fileType,data.fileId,data.date,data.user,data.download,data.editeLink];
-      targetSheet.getRange(nbrRows+1,1,1,16).setValues([dato]);
+      targetSheet.insertRowBefore(2);
+      var dato=[data.id.toString(),data.name, data.type,data.customer,data.activityArea,data.serviceLine,data.country,data.season,data.description,data.fileName,data.fileType,data.fileId,data.date,data.user,data.download,data.editeLink];
+      targetSheet.getRange(2,1,1,16).setValues([dato]);
       return "Done";
 }
 
@@ -670,19 +689,25 @@ export const getRecentData =()=>{
   export const getAlert=()=>{
     var targetSheet = getSheet("Alert");
     var nomRows = targetSheet.getLastRow();
-    var alerts =  targetSheet.getRange(2,1,nomRows-1,4).getValues();
-   var data = alerts.map((x,index)=> {
-               var email=x[0].split(';');
-               email.pop();
-               return {
-               id:index+2,
-               emails:email,
-               dateEnd:x[1],
-               link:x[2],
-               fileName:x[3],
-               }
-           });
-   return data;
+    var data=[];
+    if(nomRows-1>=1){
+      var alerts =  targetSheet.getRange(2,1,nomRows-1,4).getValues();
+       data = alerts.map((x,index)=> {
+                  var email=x[0].split(';');
+                  email.pop();
+                  return {
+                  id:index+2,
+                  emails:email,
+                  dateEnd:x[1],
+                  link:x[2],
+                  fileName:x[3],
+                  }
+              });
+      return data;
+    }else{
+      return data;
+    }
+   
     
     
   }
@@ -691,7 +716,7 @@ export const getRecentData =()=>{
   export const sendAlert =()=>{
     var data =getAlert(); 
       data.map((alert,index)=>{
-       
+       Logger.log("on lance l'arter");
       var dateEnd = new Date(alert.dateEnd);
       var daten = new Date();
       if(daten<=dateEnd){
@@ -775,12 +800,14 @@ export const getRecentData =()=>{
       
 
       export const search =(val)=>{
+        Logger.log(val);
         var targetSheet = getSheet("Data");
         var nomRows = targetSheet.getLastRow();  
-          var found = targetSheet.getRange(1,2,nomRows-1).createTextFinder(val).matchCase(false).findAll();
+          var found = targetSheet.getRange(1,2,nomRows).createTextFinder(val).matchCase(false).findAll();
          var data= found.map((range)=>{
                   return  gettarge(range.getRow())
                   });
+                  Logger.log(data);
           return data;
         }
 
@@ -811,3 +838,102 @@ export const getRecentData =()=>{
           
           }
         
+
+export const getSugessiontName = ()=>{
+
+  var targetSheet = getSheet("Data");
+  var nomRows = targetSheet.getLastRow();
+  var document =[];
+  document =  targetSheet.getRange(2,2,nomRows-1,1).getValues().map((val)=>{
+                                                                    return {name:val[0]};
+  });
+  return document;
+}
+
+
+export const searchfilter =(val)=>{
+  var targetSheet = getSheet("Data");
+  var nomRows = targetSheet.getLastRow();  
+    var found = targetSheet.getRange(1,2,nomRows-1).createTextFinder(val).matchCase(false).findAll();
+   var data= found.map((range)=>{
+            return  targetSheet.getRange(range.getRow(),1,1,16).getValues()[0];
+            });
+    return data;
+}
+
+ 
+
+export const addSuggestion =(val,colunm)=>{
+  var targetSheet = getSheet("Suggestion");
+  var nomRows = targetSheet.getLastRow();  
+  var indice = targetSheet.getRange(2,colunm,1,1).getValue();
+  targetSheet.getRange(2,colunm,1,1).setValue(targetSheet.getRange(2,colunm,1,1).getValue()+1);
+  targetSheet.getRange(indice+3,colunm,1,1).setValue(val);
+  return "DONE";
+}
+
+
+export const addNewSuggestion =(typee,emaile,serviceLinee,customere,countrye,activityAreae,seasone)=>{
+  var suggestion = getSuggestion();
+    var type =[];
+    var serviceLine = [];
+    var customer =[];
+    var country = [];
+    var season = [];
+    var activityArea = [];
+    var email = [];
+     type = suggestion.type;
+     serviceLine = suggestion.serviceLine;
+     customer = suggestion.customer;
+     country = suggestion.country;
+     season = suggestion.season;
+     activityArea = suggestion.activityArea;
+     email = suggestion.email;
+    if(type.indexOf(typee)==-1){
+      addSuggestion(typee,1);
+    }
+    if(serviceLine.indexOf(serviceLinee)==-1){
+    addSuggestion(serviceLinee,6);
+    }
+    if(customer.indexOf(customere)==-1){
+      addSuggestion(customere,2);
+    }
+    if(country.indexOf(countrye)==-1){
+    addSuggestion(countrye,3);
+    }
+    if(activityArea.indexOf(activityAreae)==-1){
+    addSuggestion(activityAreae,4);
+    }
+    if(season.indexOf(seasone)==-1){
+    addSuggestion(seasone,5);
+    }
+    if(emaile.length>0){
+       emaile.map((mail)=>{
+                if(email.indexOf(mail)==-1){
+                 addSuggestion(mail,7);
+      }
+     });
+    }
+      
+}
+
+
+
+export const getSuggestion =()=>{
+  var targetSheet = getSheet("Suggestion");
+  var nomRows = targetSheet.getLastRow();
+  var suggestion =  targetSheet.getRange(2,1,nomRows-1,7).getValues();
+  Logger.log(suggestion);
+  var suggestions={
+    type:getTab(suggestion,0),
+    customer:getTab(suggestion,1),
+    country:getTab(suggestion,2),
+    activityArea:getTab(suggestion,3),
+    season:getTab(suggestion,4),
+    serviceLine:getTab(suggestion,5),
+    email:getTab(suggestion,6),
+  };
+  
+  return suggestions;
+
+}

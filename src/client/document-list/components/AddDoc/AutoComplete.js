@@ -21,9 +21,8 @@ export default function Playground(props) {
     <div style={{ width: props.length, marginLeft:props.margin }}>
       <Autocomplete
         {...defaultProps}
-        id="auto-complete"
-        autoComplete
-        includeInputInList
+        id="free-solo-demo"
+        freeSolo
         onInputChange={(event, value, reason)=>change(value)}
         onChange={(event, value, reason)=>change(value)}
         renderInput={(params) => <TextField {...params} label={props.label} margin="normal" />}

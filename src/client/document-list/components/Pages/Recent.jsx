@@ -173,7 +173,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TitlebarGridList() {
+export default function TitlebarGridList(props) {
   const classes = useStyles();
   const [chargin,setChargin] = React.useState(true);
   const [theFirst,setTheFirst]=React.useState(true);
@@ -207,10 +207,26 @@ export default function TitlebarGridList() {
   );
   const deleteData =(oldData)=>{
     console.log("sa marche")
-    console.log(state.data.indexOf(oldData));
     setState((prevState) => {
-      const data = [...prevState.data];
-      data.splice(data.indexOf(oldData), 1);
+      const data = prevState.data;
+      if(state.data.today.indexOf(oldData)!==-1){
+        data.today.splice(data.today.indexOf(oldData), 1);
+      }
+      if(state.data.yesteday.indexOf(oldData)!==-1){
+        data.yesteday.splice(data.yesteday.indexOf(oldData), 1);
+      }
+      if(state.data.thisWeek.indexOf(oldData)!==-1){
+        data.thisWeek.splice(data.thisWeek.indexOf(oldData), 1);
+      }
+      if(state.data.lastWeek.indexOf(oldData)!==-1){
+        data.lastWeek.splice(data.lastWeek.indexOf(oldData), 1);
+      }
+      if(state.data.thisMonth.indexOf(oldData)!==-1){
+        data.thisMonth.splice(data.thisMonth.indexOf(oldData), 1);
+      }
+      if(state.data.thisMonth.indexOf(oldData)!==-1){
+        data.lastMonth.splice(data.lastMonth.indexOf(oldData), 1);
+      }
       return { ...prevState, data };
     });
   }
@@ -264,7 +280,7 @@ export default function TitlebarGridList() {
           {state.data.today.map((document, index) => (
             <div key={index}>
               <Grid xl="auto">
-              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
               </Grid>
             </div>
           ))}

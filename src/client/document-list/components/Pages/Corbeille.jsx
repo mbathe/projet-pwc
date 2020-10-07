@@ -258,6 +258,7 @@ export default function EnhancedTable() {
           const data = [...prevState];
           var oldData = getRowById(id);
           data.splice(data.indexOf(oldData), 1);
+          setSelected([]);
           return  data ;
         });
       })
@@ -274,6 +275,7 @@ export default function EnhancedTable() {
           const data = [...prevState];
           var oldData = getRowById(id);
           data.splice(data.indexOf(oldData), 1);
+          setSelected([]);
           return  data ;
         });
       })
@@ -336,7 +338,7 @@ export default function EnhancedTable() {
     <div className={classes.root}>
     {chargin === false && <CircularIndeterminate /> }
     {chargin === true &&  <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} deleteData={deleteData} restoreData={restoreData}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} deleteData={deleteData} restoreData={restoreData} />
         <TableContainer>
           <Table
             className={classes.table}

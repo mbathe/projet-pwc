@@ -43,5 +43,11 @@ global.getNotification = publicSheetFunctions.getNotification;
 global.getDocumentNumber = publicSheetFunctions.getDocumentNumber;
 global.search = publicSheetFunctions.search;
 global.gettarge = publicSheetFunctions.gettarge;
+global.getSugessiontName = publicSheetFunctions.getSugessiontName;
+global.searchfilter = publicSheetFunctions.searchfilter;
+global.getSuggestion = publicSheetFunctions.getSuggestion;
+global.addNewSuggestion = publicSheetFunctions.addNewSuggestion;
+global.addSuggestion = publicSheetFunctions.addSuggestion;
+global.uploadFileTest = publicSheetFunctions.uploadFileTest;
 
 

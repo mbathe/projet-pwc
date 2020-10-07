@@ -32,6 +32,7 @@ import PropalePage from './Pages/Propales';
 import RecentPage from './Pages/Recent';
 import SettingPage from './Pages/Setting';
 import SearchPage from './Pages/SearchPage';
+import SearchPageFilter from './Pages/SearchPageFilter';
 import AdmininstratifPage from './Pages/DocumentAmin';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -167,10 +168,28 @@ export default function PersistentDrawerLeft() {
     setOpen(false);
   };
 
-  const [selectPage,setSelectPage]=React.useState("SearchPage");
-  const [userStatu,setUserStatu]= React.useState("Secrétaire");
-  const [state,setState]=React.useState(
-    {
+  const [selectPage,setSelectPage]=React.useState("Page1");
+  const [userStatu,setUserStatu]= React.useState("Standart");
+  const [editCompte,setEditCompte]=React.useState(false);
+  const [suggestion, setSuggestion] = React.useState({
+    type: [],
+    customer: [],
+    country: [],
+    activityArea: [],
+    season: [],
+    serviceLine: [],
+    email: [],
+  });
+  const [suggestionSelect, setSuggestionSelect] = React.useState({
+    type: 0,
+    customer: 0,
+    country: 0,
+    activityArea: 0,
+    season: 0,
+    serviceLine: 0,
+    email: 0,
+  });
+  const [state,setState]=React.useState({
     filter:{
         type:"Tous",
         season:"Tous",
@@ -178,10 +197,28 @@ export default function PersistentDrawerLeft() {
         serviceLine:"Tous",
         country:"Tous",
         client:"Tous",
-    },
-    data:[]
     }
+  }
   );
+
+  const resetFilter = ()=>{
+   setState({filter:{  
+   type:"Tous",
+   season:"Tous",
+   activityArea:"Tous",
+   serviceLine:"Tous",
+   country:"Tous",
+   client:"Tous",}});
+   setSuggestionSelect({ 
+    type: 0,
+    customer: 0,
+    country: 0,
+    activityArea: 0,
+    season: 0,
+    serviceLine: 0,
+    email: 0,});
+  }
+
   const setPage=(valeur)=>{
     setSelectPage(valeur);
     if(valeur!=="SearchPage"){
@@ -190,22 +227,17 @@ export default function PersistentDrawerLeft() {
   }
   useEffect(
     () => {
-      server
-        .datafiltere(state.filter)
-        .then((valeur)=>{
-          console.log(valeur)
-         setState((prevStat)=>{
-           return {filter:prevStat.filter,data:valeur}
-         })
-        })
-        .catch(alert);
-
         server
         .getDocumentNumber()
         .then((valeur)=>{
           console.log(valeur);
          setDataNumber(valeur);
         })
+        .catch(alert);
+
+        server
+        .getSuggessionFilter()
+        .then(setSuggestion)
         .catch(alert);
     },
     { data: [] }
@@ -215,27 +247,23 @@ export default function PersistentDrawerLeft() {
     setSearchVal(val);
     setPage("SearchPag")
     setTimeout(()=>{setPage("SearchPage");}, 5);
-    //console.log("changement de valeur inter "+val);
-    /*
-    setTimeout(()=>{setPage("SearchPage");}, 50);
-    if(selectPage!=="SearchPage"){
-      setTimeout(()=>{setPage("SearchPage");}, 50);
-    }
-    */
-    //setPage("Page1");
-   // setTimeout(()=>{setPage("SearchPage");}, 100);
+    
    }
  }
   const setStateFilter =(valeur)=>{
-      server
-      .datafiltere(valeur)
-      .then((val)=>{
-       setState((prevStat)=>{
-         return {filter:valeur,data:val}
-       })
-      })
-      .catch(alert);
-
+    setState({filter:valeur});
+    setPage("SearchPag");
+    setTimeout(()=>{setPage("SearchPageFilter");}, 5);
+    const select ={
+      type: suggestion.type.indexOf(valeur.type),
+      customer: suggestion.customer.indexOf(valeur.client),
+      country: suggestion.country.indexOf(valeur.country),
+      activityArea:suggestion.activityArea.indexOf(valeur.activityArea),
+      season: suggestion.season.indexOf(valeur.season),
+      serviceLine: suggestion.serviceLine.indexOf(valeur.serviceLine),
+      email: suggestion.type.indexOf(valeur.type),
+    }    
+    setSuggestionSelect(select);
   }
   const [clique, setClique] = React.useState(false);
 
@@ -248,7 +276,7 @@ export default function PersistentDrawerLeft() {
     <ThemeProvider theme={theme}>
     <div className={classes.root}>
       <CssBaseline />
-      <SearchAppBar dataSearch={state.data} changeFilter={setStateFilter} setStatu={(valeur)=>{setUserStatu(valeur)}} handleDrawerOpen={handleDrawerOpen} open={open} search={changeValueSearch} setPage={setPage} prevPage={prevPage}/>
+      <SearchAppBar  changeFilter={setStateFilter} setStatu={(valeur)=>{setUserStatu(valeur)}} handleDrawerOpen={handleDrawerOpen} open={open} search={changeValueSearch} setPage={setPage} prevPage={prevPage} suggestion={suggestion} suggestionSelect={suggestionSelect} resetFilter={resetFilter} setEditCompte={(val)=>{setEditCompte(val)}}/>
      <Drawer
         className={classes.drawer}
         variant="persistent"
@@ -265,8 +293,8 @@ export default function PersistentDrawerLeft() {
         </div>
         <Divider />
 
-       {userStatu=="Administrateur" &&<Bouton clique={addDocument}/>}
-        <StyledTreeItem setPage={setPage} docNumber={dataNumber}/>
+       {editCompte==true &&<Bouton clique={addDocument}/>}
+        <StyledTreeItem setPage={setPage} docNumber={dataNumber} editCompte={editCompte} userStatu={userStatu}/>
         <Divider />
       </Drawer>
       <main  className={clsx(classes.content, {
@@ -274,18 +302,19 @@ export default function PersistentDrawerLeft() {
       })}>
         <div className={classes.toolbar} />
         <div className="main-wrapper">
-            {selectPage=="Page1" && <DocumentsPage />}
-            {selectPage=="Page2" && <RecentPage />}
+            {selectPage=="Page1" && <DocumentsPage editCompte={editCompte}/>}
+            {selectPage=="Page2" && <RecentPage editCompte={editCompte}/>}
             {selectPage=="Page3" && <CorbeillePage />}
             {selectPage=="Page4" && <SettingPage />}
             {selectPage=="Page5" && <AboutPage />}
-            {selectPage=="Page6" && <CourrierPage />}
-            {selectPage=="Page7" && <PropalePage />}
-            {selectPage=="Page8" && <MissionLetterPage />}
-            {selectPage=="Page9" && <MissionRapport />}
-            {selectPage=="Page10" && <CVPage />}  
-            {selectPage=="Page11" && <AdmininstratifPage />}  
-            {selectPage=="SearchPage" && <SearchPage searchValue={searchVal}  />}
+            {selectPage=="Page6" && <CourrierPage editCompte={editCompte}/>}
+            {selectPage=="Page7" && <PropalePage editCompte={editCompte}/>}
+            {selectPage=="Page8" && <MissionLetterPage editCompte={editCompte}/>}
+            {selectPage=="Page9" && <MissionRapport editCompte={editCompte} />}
+            {selectPage=="Page10" && <CVPage editCompte={editCompte}/>}  
+            {selectPage=="Page11" && <AdmininstratifPage editCompte={editCompte}/>}  
+            {selectPage=="SearchPage" && <SearchPage searchValue={searchVal} editCompte={editCompte} />}
+            {selectPage=="SearchPageFilter" && <SearchPageFilter filter={state.filter} editCompte={editCompte} />}
 
         </div>
       </main>

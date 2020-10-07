@@ -213,11 +213,11 @@ export default function GmailTreeView(props) {
       
       </StyledTreeItem>
       <StyledTreeItem nodeId="2" labelText="recent" labelIcon={AccessTimeIcon}  setPage={props.setPage}/>
-      <StyledTreeItem nodeId="3" labelText="Corbeille" labelIcon={DeleteIcon}  setPage={props.setPage} />
+     {props.editCompte==true && <StyledTreeItem nodeId="3" labelText="Corbeille" labelIcon={DeleteIcon}  setPage={props.setPage} />}
 
       <Divider />
 
-      <StyledTreeItem nodeId="4" labelText="Setting" labelIcon={SettingsIcon}  setPage={props.setPage}/>
+      {props.editCompte==true && props.userStatu=="Administrateur" && <StyledTreeItem nodeId="4" labelText="Setting" labelIcon={SettingsIcon}  setPage={props.setPage}/>}
       <StyledTreeItem nodeId="5" labelText="About" labelIcon={InfoIcon}  setPage={props.setPage} />
     </TreeView>
   

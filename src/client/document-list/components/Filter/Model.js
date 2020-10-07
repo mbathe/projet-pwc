@@ -43,19 +43,14 @@ export default function TransitionsModal() {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        disableEscapeKeyDown={true}
         open={open}
-        disableEscapeKeyDown={true}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-     
-   
       <SimpleFade/>  
-    
       </Modal>
     </div>
   );

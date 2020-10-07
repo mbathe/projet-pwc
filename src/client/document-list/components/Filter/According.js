@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import IconButton from '@material-ui/core/IconButton';
 import SimpleFade from './SimpleFade';
+import AddForm from './AddForm';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
@@ -18,13 +19,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PopperPopupState(props) {
   const classes = useStyles();
-
+  const inputEl = React.useRef();
+  const  closeFilter= ()=>{
+    inputEl.current.click();
+  }
   return (
     <PopupState variant="popper" popupId="demo-popup-popper">
       {(popupState) => (
         <div>
         <IconButton variant="contained" color="primary" size="medium" {...bindToggle(popupState)}
-          color="inherit">
+          color="inherit" ref={inputEl}>
           <ArrowDropDownIcon />
         </IconButton>
           <Popper {...bindPopper(popupState)} transition placement="bottom-start"  modifiers={{
@@ -42,7 +46,7 @@ export default function PopperPopupState(props) {
           }}>
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
-                <SimpleFade changeFilter={props.changeFilter}/>
+                <AddForm changeFilter={props.changeFilter} closeFilter={closeFilter} suggestion={props.suggestion} suggestionSelect={props.suggestionSelect} resetFilter={props.resetFilter}/>
               </Fade>
             )}
           </Popper>
