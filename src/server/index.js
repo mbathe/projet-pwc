@@ -49,5 +49,8 @@ global.getSuggestion = publicSheetFunctions.getSuggestion;
 global.addNewSuggestion = publicSheetFunctions.addNewSuggestion;
 global.addSuggestion = publicSheetFunctions.addSuggestion;
 global.uploadFileTest = publicSheetFunctions.uploadFileTest;
+global.getHistoriqueSearch =publicSheetFunctions.getHistoriqueSearch;
+global.addHistorique  = publicSheetFunctions.addHistorique;
+global.addMailSimple = publicSheetFunctions.addMailSimple;
 
 

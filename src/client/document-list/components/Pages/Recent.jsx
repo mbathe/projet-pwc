@@ -296,7 +296,7 @@ export default function TitlebarGridList(props) {
           {state.data.yesteday.map((document, index) => (
             <div key={index}>
               <Grid xl="auto">
-              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
               </Grid>
             </div>
           ))}
@@ -312,7 +312,7 @@ export default function TitlebarGridList(props) {
           {state.data.thisWeek.map((document, index) => (
             <div key={index}>
               <Grid xl="auto">
-              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
               </Grid>
             </div>
           ))}
@@ -328,7 +328,7 @@ export default function TitlebarGridList(props) {
           {state.data.lastWeek.map((document, index) => (
             <div key={index}>
               <Grid xl="auto">
-              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+              <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
               </Grid>
             </div>
           ))}
@@ -344,7 +344,7 @@ export default function TitlebarGridList(props) {
             {state.data.thisMonth.map((document, index) => (
               <div key={index}>
                 <Grid xl="auto">
-                <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+                <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
                 </Grid>
               </div>
             ))}
@@ -360,7 +360,7 @@ export default function TitlebarGridList(props) {
               {state.data.lastMonth.map((document, index) => (
                 <div key={index}>
                   <Grid xl="auto">
-                  <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData}/>
+                  <ImgMediaCard document={document} key={"" + index} index={index} delete ={deleteData} editCompte={props.editCompte}/>
                   </Grid>
                 </div>
               ))}

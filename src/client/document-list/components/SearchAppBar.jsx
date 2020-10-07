@@ -177,6 +177,7 @@ export default function PrimarySearchAppBar(props) {
     name: '',
   }); 
 const [autocomple,setAutocomple] =React.useState([]);
+const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
  const [notification,setNotification]=React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -184,12 +185,22 @@ const [autocomple,setAutocomple] =React.useState([]);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [valSearch,setValSearch]=React.useState("");
+  const [changeFirst,setChangeFirst] =React.useState(true);
+  const [tempAutocomple,setTempAutocomple]= React.useState([]);
   useEffect(
     () => {
       server
         .getSugessiontName()
         .then((val)=>{
-          setAutocomple(val)
+          setTempAutocomple(val);
+        })
+        .catch(alert);
+        
+        server
+        .getHistoriqueSearch()
+        .then((val)=>{
+          setHistoriqueSearch(val);
+          setAutocomple(val);
         })
         .catch(alert);
      
@@ -235,7 +246,7 @@ const [autocomple,setAutocomple] =React.useState([]);
 
     const tabm =[response.profileObj.email];
     server.
-    addSuggestion(tabm,7)
+    addMailSimple(tabm)
     .then((val)=>{
       console.log(val);
     })
@@ -254,8 +265,14 @@ const [autocomple,setAutocomple] =React.useState([]);
    // console.log(e.target.value);
    if(value!==""){
     setValSearch(value);
+    if(changeFirst){
+    setAutocomple(tempAutocomple);
+    setChangeFirst(false);
+    }
     console.log("valeur en temps reel1 "+valSearch)
    }else{
+     setAutocomple(historiqueSearch);
+     setChangeFirst(true);
     setValSearch("");
    }
     
@@ -270,7 +287,12 @@ const [autocomple,setAutocomple] =React.useState([]);
   const search = ()=>{
     console.log("veur de recherche2 "+valSearch);
     if(valSearch!==""){
-      props.search(valSearch);    
+      props.search(valSearch);  
+      setHistoriqueSearch((prevstate)=>{
+        const data =[...prevstate];
+        data.unshift({name:valSearch});
+        return data;
+      });
     }else{
      console.log("on conserve2")
     }
@@ -280,6 +302,11 @@ const [autocomple,setAutocomple] =React.useState([]);
     if(reason ==="select-option"){
       props.search(value);    
       setValSearch(value);
+      setHistoriqueSearch((prevstate)=>{
+        const data =[...prevstate];
+        data.unshift({name:value});
+        return data;
+      });
     }else{
      console.log("on conserve3")
     }

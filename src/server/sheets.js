@@ -937,3 +937,51 @@ export const getSuggestion =()=>{
   return suggestions;
 
 }
+
+
+export const  getHistoriqueSearch=()=>{
+  var targetSheet = getSheet("Historique");
+  var nomRows = targetSheet.getLastRow();  
+  var indice = targetSheet.getRange(1,1,nomRows,1).getValues();
+   var historique =   indice.map((x)=>{
+               return {name:x[0]}
+               })
+    return historique;
+  
+  }
+
+
+  export const addHistorique = (val)=>{
+    const data = {name:val};
+    Logger.log(data);
+    var historique =[];
+   historique = getHistoriqueSearch();
+    Logger.log(historique.indexOf(data));
+    var isInt = false;
+    for(var i=0;i<historique.length;i++){
+     if(historique[i].name===val){
+      isInt =true;
+    }
+    }
+    if(!isInt){
+    var targetSheet = getSheet("Historique");
+      targetSheet.insertRowBefore(1);
+      targetSheet.getRange(1,1,1,1).setValue(val);
+    }
+    Logger.log(isInt);
+    return "DONE";
+  }
+
+  export const addMailSimple =(emaile)=>{
+    var suggestion = getSuggestion();
+    var email = [];
+    email = suggestion.email;
+     if(emaile.length>0){
+         emaile.map((mail)=>{
+                  if(email.indexOf(mail)==-1){
+                   addSuggestion(mail,7);
+        }
+       });
+      }
+      return "Done";
+    }

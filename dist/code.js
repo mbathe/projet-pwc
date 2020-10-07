@@ -89,6 +89,12 @@ function addNewSuggestion() {
 function addSuggestion() {
 }
 function uploadFileTest() {
+}
+function getHistoriqueSearch() {
+}
+function addHistorique() {
+}
+function addMailSimple() {
 }!function(e, a) {
     for (var i in a) e[i] = a[i];
 }(this, function(modules) {
@@ -165,7 +171,9 @@ function uploadFileTest() {
         global.getSugessiontName = _sheets__WEBPACK_IMPORTED_MODULE_1__["getSugessiontName"], 
         global.searchfilter = _sheets__WEBPACK_IMPORTED_MODULE_1__["searchfilter"], global.getSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["getSuggestion"], 
         global.addNewSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["addNewSuggestion"], 
-        global.addSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["addSuggestion"], global.uploadFileTest = _sheets__WEBPACK_IMPORTED_MODULE_1__["uploadFileTest"];
+        global.addSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["addSuggestion"], global.uploadFileTest = _sheets__WEBPACK_IMPORTED_MODULE_1__["uploadFileTest"], 
+        global.getHistoriqueSearch = _sheets__WEBPACK_IMPORTED_MODULE_1__["getHistoriqueSearch"], 
+        global.addHistorique = _sheets__WEBPACK_IMPORTED_MODULE_1__["addHistorique"], global.addMailSimple = _sheets__WEBPACK_IMPORTED_MODULE_1__["addMailSimple"];
     }.call(this, __webpack_require__(1));
 }, function(module, exports) {
     var g;
@@ -291,6 +299,12 @@ function uploadFileTest() {
         return addNewSuggestion;
     })), __webpack_require__.d(__webpack_exports__, "getSuggestion", (function() {
         return getSuggestion;
+    })), __webpack_require__.d(__webpack_exports__, "getHistoriqueSearch", (function() {
+        return getHistoriqueSearch;
+    })), __webpack_require__.d(__webpack_exports__, "addHistorique", (function() {
+        return addHistorique;
+    })), __webpack_require__.d(__webpack_exports__, "addMailSimple", (function() {
+        return addMailSimple;
     }));
     var getSheets = function() {
         return SpreadsheetApp.getActive().getSheets();
@@ -752,5 +766,30 @@ function uploadFileTest() {
             serviceLine: getTab(suggestion, 5),
             email: getTab(suggestion, 6)
         };
+    }, getHistoriqueSearch = function() {
+        var targetSheet = getSheet("Historique"), nomRows = targetSheet.getLastRow();
+        return targetSheet.getRange(1, 1, nomRows, 1).getValues().map((function(x) {
+            return {
+                name: x[0]
+            };
+        }));
+    }, addHistorique = function(val) {
+        var data = {
+            name: val
+        };
+        Logger.log(data);
+        var historique = [];
+        historique = getHistoriqueSearch(), Logger.log(historique.indexOf(data));
+        for (var isInt = !1, i = 0; i < historique.length; i++) historique[i].name === val && (isInt = !0);
+        if (!isInt) {
+            var targetSheet = getSheet("Historique");
+            targetSheet.insertRowBefore(1), targetSheet.getRange(1, 1, 1, 1).setValue(val);
+        }
+        return Logger.log(isInt), "DONE";
+    }, addMailSimple = function(emaile) {
+        var suggestion = getSuggestion(), email = [];
+        return email = suggestion.email, emaile.length > 0 && emaile.map((function(mail) {
+            -1 == email.indexOf(mail) && addSuggestion(mail, 7);
+        })), "Done";
     };
 } ]));

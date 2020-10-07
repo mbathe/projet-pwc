@@ -247,6 +247,12 @@ export default function PersistentDrawerLeft() {
     setSearchVal(val);
     setPage("SearchPag")
     setTimeout(()=>{setPage("SearchPage");}, 5);
+    server.
+    addHistorique(val)
+    .then((val)=>{
+    console.log(val);
+  })
+  .catch(alert);
     
    }
  }

@@ -253,7 +253,7 @@ export default function TitlebarGridList(props) {
         {theFirst ==true &&
         <div style={{ display: 'flex', alignItems: 'center' }}>
         <p style={{ textAlign: "center" }}>
-          <b>Résultat de recherche!</b>
+          <b>Résultat de recherche</b>
         </p>
         </div>
         }
