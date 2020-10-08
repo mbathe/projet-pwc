@@ -17,7 +17,12 @@ import Divider from '@material-ui/core/Divider';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
-
+import FolderIcon from '@material-ui/icons/Folder';
+import DescriptionIcon from '@material-ui/icons/Description';
+import DraftsIcon from '@material-ui/icons/Drafts';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import NoteIcon from '@material-ui/icons/Note';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -155,7 +160,7 @@ export default function GmailTreeView(props) {
       defaultEndIcon={<div style={{ width: 40 }} />}
     >
      
-      <StyledTreeItem nodeId="1" labelText="Documents" labelIcon={Label}  setPage={props.setPage} labelInfo={props.docNumber.total}>
+      <StyledTreeItem nodeId="1" labelText="Documents" labelIcon={FolderIcon}  setPage={props.setPage} labelInfo={props.docNumber.total}>
         <StyledTreeItem
           nodeId="6"
           labelText="Couriers"
@@ -168,7 +173,7 @@ export default function GmailTreeView(props) {
         <StyledTreeItem
           nodeId="7"
           labelText="Propales"
-          labelIcon={InfoIcon}
+          labelIcon={NoteIcon}
           labelInfo={props.docNumber.propal}
           color="#e3742f"
           bgColor="#fcefe3"
@@ -177,7 +182,7 @@ export default function GmailTreeView(props) {
         <StyledTreeItem
           nodeId="8"
           labelText="Mission letters"
-          labelIcon={ForumIcon}
+          labelIcon={DraftsIcon}
           labelInfo= {props.docNumber.missionLeter}
           color="#a250f5"
           bgColor="#f3e8fd"
@@ -186,7 +191,7 @@ export default function GmailTreeView(props) {
         <StyledTreeItem
           nodeId="9"
           labelText="Mission reports"
-          labelIcon={LocalOfferIcon}
+          labelIcon={DescriptionIcon}
           labelInfo={props.docNumber.missionRaport}
           color="#3c8039"
           bgColor="#e6f4ea"
@@ -195,7 +200,7 @@ export default function GmailTreeView(props) {
         <StyledTreeItem
       nodeId="11"
       labelText="Administrative docs"
-      labelIcon={LocalOfferIcon}
+      labelIcon={MenuBookIcon}
       labelInfo={props.docNumber.documentAmin}
       color="#3c8039"
       bgColor="#e6f4ea"
@@ -204,7 +209,7 @@ export default function GmailTreeView(props) {
         <StyledTreeItem
         nodeId="10"
         labelText="CV"
-        labelIcon={LocalOfferIcon}
+        labelIcon={ReceiptIcon}
         labelInfo={props.docNumber.cv}
         color="#3c8039"
         bgColor="#e6f4ea"
@@ -218,7 +223,6 @@ export default function GmailTreeView(props) {
       <Divider />
 
       {props.editCompte==true && props.userStatu=="Administrateur" && <StyledTreeItem nodeId="4" labelText="Setting" labelIcon={SettingsIcon}  setPage={props.setPage}/>}
-      <StyledTreeItem nodeId="5" labelText="About" labelIcon={InfoIcon}  setPage={props.setPage} />
     </TreeView>
   
   );

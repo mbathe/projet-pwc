@@ -143,6 +143,7 @@ import ImgMediaCard from '../ImgMediaCard';
 import InfiniteScroll from "react-infinite-scroll-component";
 import Grid from '@material-ui/core/Grid';
 import CircularIndeterminate from './CircularIndeterminate';
+import DocumentNotFound from './DocumentNotFound';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -176,6 +177,7 @@ export default function TitlebarGridList(props) {
   const [chargin,setChargin] = React.useState(true);
   const [theFirst,setTheFirst]=React.useState(false);
   const [hasmore,setHasmore]=React.useState(true);
+  const [notFound,setNotFound]= React.useState(false);
   const [state, setState] = React.useState({
     indexfin:0,
     chargin: false,
@@ -194,6 +196,9 @@ export default function TitlebarGridList(props) {
           setState((prevState) => {
             console.log(dato.length);
             var dataf= [...prevState.data,...dato];
+            if(dataf.length===0){
+              setNotFound(true);
+              }
             return {
               indexfin:dato.indexfin,
               chargin: prevState.chargin,
@@ -201,6 +206,7 @@ export default function TitlebarGridList(props) {
               data: dataf,
             }});
             setTheFirst(true);
+            
         })
         .catch(alert);
      
@@ -219,7 +225,11 @@ export default function TitlebarGridList(props) {
 
  
   return (
-   
+
+  <div>
+   {notFound ===true && <DocumentNotFound/>}
+     {notFound === false &&
+
     <InfiniteScroll
    
       dataLength={state.data.length} //This is important field to render the next data
@@ -253,7 +263,7 @@ export default function TitlebarGridList(props) {
         {theFirst ==true &&
         <div style={{ display: 'flex', alignItems: 'center' }}>
         <p style={{ textAlign: "center" }}>
-          <b>Résultat de recherche</b>
+          <h3>Search results</h3>
         </p>
         </div>
         }
@@ -268,7 +278,8 @@ export default function TitlebarGridList(props) {
           </Grid>
         </div>
       }
-    </InfiniteScroll>
-   
+          </InfiniteScroll>
+        }
+        </div>
   );
 }

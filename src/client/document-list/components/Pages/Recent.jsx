@@ -255,7 +255,7 @@ export default function TitlebarGridList(props) {
     </div>}
       endMessage={
         <p style={{ textAlign: "center" }}>
-          <b>You have seen it all!</b>
+          
         </p>
       }
       // below props only if you need pull down functionality
