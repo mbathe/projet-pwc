@@ -211,7 +211,7 @@ function addMailSimple() {
         var html = HtmlService.createHtmlOutputFromFile("sidebar-about-page");
         SpreadsheetApp.getUi().showSidebar(html);
     }, doGet = function() {
-        return HtmlService.createHtmlOutputFromFile("documents").setWidth(600).setHeight(600);
+        return HtmlService.createHtmlOutputFromFile("documents").setTitle("Base du secrétaria").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png");
     };
 }, function(module, __webpack_exports__, __webpack_require__) {
     "use strict";

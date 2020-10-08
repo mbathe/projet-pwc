@@ -10,6 +10,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import IconButton from '@material-ui/core/IconButton';
 import SimpleFade from './SimpleFade';
 import AddForm from './AddForm';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
@@ -27,10 +28,12 @@ export default function PopperPopupState(props) {
     <PopupState variant="popper" popupId="demo-popup-popper">
       {(popupState) => (
         <div>
+        <Tooltip title="Search options">
         <IconButton variant="contained" color="primary" size="medium" {...bindToggle(popupState)}
           color="inherit" ref={inputEl}>
           <ArrowDropDownIcon />
         </IconButton>
+        </Tooltip>
           <Popper {...bindPopper(popupState)} transition placement="bottom-start"  modifiers={{
             flip: {
               enabled: true,

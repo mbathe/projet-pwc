@@ -27,7 +27,5 @@ export const openAboutSidebar = () => {
 };
 
 export const doGet =()=>{
-  return HtmlService.createHtmlOutputFromFile('documents')
-  .setWidth(600)
-  .setHeight(600);
+  return HtmlService.createHtmlOutputFromFile('documents').setTitle('Base du secrétaria').setFaviconUrl('https://www.zupimages.net/up/20/41/5mpa.png');
 }

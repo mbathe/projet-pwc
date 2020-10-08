@@ -139,7 +139,7 @@ const [open, setOpen] = React.useState(false);
         <CardContent>
         <Tooltip title={<Typography fontSize = {8}  variant='body2'>{props.document.name+"_"+props.document.type+"_"+props.document.serviceLine+"_"+props.document.client+"_"+props.document.activityArea+"_"+props.document.country+"_"+props.document.season} </Typography>} className={classes.tooltip} >
           <Typography fontSize = {6} noWrap={true} variant='body2'>
-          {props.document.name}
+            {props.document.name}
           </Typography>
           </Tooltip>
         </CardContent>
@@ -149,6 +149,7 @@ const [open, setOpen] = React.useState(false);
       <CardActions>
       {
         props.editCompte ===true &&
+        <Tooltip title="Delete">
       <IconButton
       className={classes.buttone}
       aria-label="delete"
@@ -159,8 +160,10 @@ const [open, setOpen] = React.useState(false);
     >
       <ClearIcon />
     </IconButton>
+    </Tooltip>
       }
     <Link href={props.document.download}>
+    <Tooltip title="download">
     <IconButton
     aria-label="delete"
     aria-controls="delete"
@@ -170,6 +173,7 @@ const [open, setOpen] = React.useState(false);
   >
     <CloudDownloadIcon />
   </IconButton>
+  </Tooltip>
   </Link>
        
       </CardActions>

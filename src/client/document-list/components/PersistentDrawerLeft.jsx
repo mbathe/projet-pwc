@@ -37,7 +37,7 @@ import AdmininstratifPage from './Pages/DocumentAmin';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import clsx from 'clsx';
-
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
 function Bouton(props) {
     const classes = useStyles();
     return (
-      
+      <Tooltip title="Add" aria-label="add">
         <Button
           variant="contained"
           color="primary"
@@ -139,7 +139,7 @@ function Bouton(props) {
         >
           Document
         </Button>
-  
+     </Tooltip>
     );
   }
 

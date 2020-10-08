@@ -311,23 +311,11 @@ export default function SimpleCard(props) {
     if(state.name==""){
       message+="the name field cannot be empty\n";
       empty = true;
-    }else if(state.season ==""){
-      message+="theseason field cannot be empty\n";
-      empty = true;
     }else if(state.type==""){
       message+="the type field cannot be empty\n";
       empty = true;
-    }else if(state.customer==""){
-      message+="the customer field cannot be empty\n";
-      empty = true;
-    }else if(state.serviceLine==""){
-      message+="the service line field cannot be empty\n";
-      empty = true;
-    }else if( state.fileName=="no file selected"){
+    }else if(state.fileName=="no file selected"){
       message+="you must select a file\n";
-      empty = true;
-    }else if(state.country==""){
-      message+="the country field cannot be empty";
       empty = true;
     }
     if (empty){

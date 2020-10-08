@@ -421,9 +421,11 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
                className={classes.inputInput}
                style={{ color: "white" }}
              />
+             <Tooltip title="Search">
              <IconButton style={{ color: "white" }} onClick={search}>
                <SearchIcon />
              </IconButton>
+             </Tooltip>
            </div>
          )} 
        />
