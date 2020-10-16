@@ -169,8 +169,8 @@ export default function PersistentDrawerLeft() {
   };
 
   const [selectPage,setSelectPage]=React.useState("Page1");
-  const [userStatu,setUserStatu]= React.useState("Standart");
-  const [editCompte,setEditCompte]=React.useState(false);
+  const [userStatu,setUserStatu]= React.useState("Administrateur");
+  const [editCompte,setEditCompte]=React.useState(true);
   const [suggestion, setSuggestion] = React.useState({
     type: [],
     customer: [],
@@ -292,10 +292,13 @@ export default function PersistentDrawerLeft() {
           paper: classes.drawerPaper,
         }}
       >
+       <div style={{display: 'flex',justifyContent: 'space-between'}}>
+        <img src="https://zupimages.net/up/20/42/y9cl.png" alt="PwC" style ={{width:65,height:55,marginTop:3}}/>
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
+        </div>
         </div>
         <Divider />
 

@@ -210,8 +210,8 @@ function addMailSimple() {
     }, openAboutSidebar = function() {
         var html = HtmlService.createHtmlOutputFromFile("sidebar-about-page");
         SpreadsheetApp.getUi().showSidebar(html);
-    }, doGet = function() {
-        return HtmlService.createHtmlOutputFromFile("documents").setTitle("Base du secrétaria").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png");
+    }, doGet = function(e) {
+        return "admin" === e.parameter.st ? HtmlService.createHtmlOutputFromFile("documentadmin").setTitle("Base du secrétaria").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png") : HtmlService.createHtmlOutputFromFile("documents").setTitle("Base du secrétaria").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png");
     };
 }, function(module, __webpack_exports__, __webpack_require__) {
     "use strict";
@@ -378,20 +378,29 @@ function addMailSimple() {
             };
         })), documents;
     }, uploadFiles = function(e) {
-        var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename), file = DriveApp.createFile(blob), val = file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        return file.addEditor("tapeoariana@gmail.com"), Logger.log(val), {
-            fileId: file.getId(),
-            editeLink: file.getUrl(),
-            doanload: file.getDownloadUrl(),
-            description: "https://lh3.googleusercontent.com/d/" + file.getId() + "=s1000-p?authuser=0"
+        var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename), file = {
+            title: e.filename,
+            mimeType: e.mimeType
+        }, fil = Drive.Files.insert(file, blob);
+        return Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize), DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW), 
+        {
+            fileId: fil.id,
+            editeLink: fil.alternateLink,
+            doanload: fil.webContentLink,
+            description: "https://lh3.googleusercontent.com/d/" + fil.id + "=s1000-p?authuser=0"
         };
     }, uploadFileTest = function(e) {
         var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename), file = {
             title: e.filename,
             mimeType: e.mimeType
+        }, fil = Drive.Files.insert(file, blob);
+        return Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize), DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW), 
+        {
+            fileId: fil.id,
+            editeLink: fil.alternateLink,
+            doanload: fil.webContentLink,
+            description: "https://lh3.googleusercontent.com/d/" + fil.id + "=s1000-p?authuser=0"
         };
-        return file = Drive.Files.insert(file, blob), Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize), 
-        "Done";
     }, getSuggession = function() {
         var targetSheet = getSheet("Suggestion"), nomRows = targetSheet.getLastRow(), suggestion = targetSheet.getRange(2, 1, nomRows - 1, 7).getValues();
         return {

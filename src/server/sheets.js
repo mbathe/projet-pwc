@@ -132,8 +132,8 @@ export const uploadFiles = (e)=>{
   var createFile = folder.createFile(file);
   return createFile.getUrl();
   */
- var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
- var file = DriveApp.createFile(blob); 
+ //var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
+ //var file = DriveApp.createFile(blob); 
  /*var users=getUsers();
  users.map((user)=>{
    if(user.statu=="Administrateur"){
@@ -143,9 +143,9 @@ export const uploadFiles = (e)=>{
    }
  });
 */
-
+/*
 var val= file.setSharing(DriveApp.Access.ANYONE_WITH_LINK,DriveApp.Permission.VIEW);
-file.addEditor("tapeoariana@gmail.com");
+
 Logger.log(val);
  var data={
     fileId: file.getId(),
@@ -154,6 +154,35 @@ Logger.log(val);
     description:"https://lh3.googleusercontent.com/d/"+file.getId()+"=s1000-p?authuser=0",
   }
  return data;
+*/
+var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
+  var file = {
+    title: e.filename,
+    mimeType: e.mimeType
+  };
+ var fil = Drive.Files.insert(file, blob);
+ 
+  Logger.log('ID: %s, File size (bytes): %s', file.id, file.fileSize);
+  
+/*
+  var data={
+    fileId: fil.getId(),
+    editeLink: fil.getUrl(),
+    doanload:fil.getDownloadUrl(),
+    description:"https://lh3.googleusercontent.com/d/"+fil.getId()+"=s1000-p?authuser=0",
+  }
+  */
+ DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK,DriveApp.Permission.VIEW);
+
+ var data={
+  fileId: fil.id,
+  editeLink: fil.alternateLink,
+  doanload:fil.webContentLink,
+  description:"https://lh3.googleusercontent.com/d/"+fil.id+"=s1000-p?authuser=0",
+}
+return data;
+
+
 }
 
 
@@ -163,9 +192,28 @@ export const uploadFileTest = (e) =>{
     title: e.filename,
     mimeType: e.mimeType
   };
-  file = Drive.Files.insert(file, blob);
+ var fil = Drive.Files.insert(file, blob);
+ 
   Logger.log('ID: %s, File size (bytes): %s', file.id, file.fileSize);
-  return 'Done';
+  
+/*
+  var data={
+    fileId: fil.getId(),
+    editeLink: fil.getUrl(),
+    doanload:fil.getDownloadUrl(),
+    description:"https://lh3.googleusercontent.com/d/"+fil.getId()+"=s1000-p?authuser=0",
+  }
+  */
+ DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK,DriveApp.Permission.VIEW);
+
+ var data={
+  fileId: fil.id,
+  editeLink: fil.alternateLink,
+  doanload:fil.webContentLink,
+  description:"https://lh3.googleusercontent.com/d/"+fil.id+"=s1000-p?authuser=0",
+}
+return data;
+ 
 }
 
 
