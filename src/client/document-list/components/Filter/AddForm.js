@@ -282,7 +282,7 @@ export default function SimpleCard(props) {
                         <NativeSelects
                           values={suggestion.activityArea}
                           select={props.suggestionSelect.activityArea}
-                          label="Activity area"
+                          label="Business unit"
                           typeChange={activityAreaChange}
                         />
                       </Grid>

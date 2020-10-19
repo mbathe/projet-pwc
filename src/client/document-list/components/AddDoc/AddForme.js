@@ -166,6 +166,7 @@ export default function SimpleCard(props) {
   const [selectedDate, setSelectedDate] = React.useState(
     new Date("2014-08-18T21:11:54")
   );
+  const [labelName,setLabelName] =React.useState("Document name")
   var obj={};
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -173,6 +174,7 @@ export default function SimpleCard(props) {
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
+   const [isrequere,setIsrequere]=React.useState(true);
   const nameChange =(e)=>{
      var name = e.target.value;
      setState((prevState)=>{
@@ -192,6 +194,15 @@ export default function SimpleCard(props) {
       }else{
         setIsPropal({gilad: false})
       }
+
+      if(valeur=="Curriculum Vitae"){
+        setLabelName('Collaborator Name');
+        setIsrequere(false);
+      }else{
+        setLabelName('Document Name');
+        setIsrequere(true);
+     }
+
       return olstate;
     });
     
@@ -309,13 +320,28 @@ export default function SimpleCard(props) {
     var message="";
     var empty = false;
     if(state.name==""){
-      message+="the name field cannot be empty\n";
+      message="the name field cannot be empty\n";
       empty = true;
     }else if(state.type==""){
-      message+="the type field cannot be empty\n";
+      message="the type field cannot be empty\n";
       empty = true;
     }else if(state.fileName=="no file selected"){
-      message+="you must select a file\n";
+      message="you must select a file\n";
+      empty = true;
+    }if(state.customer=="" && isrequere===true){
+      message="the customer field cannot be empty\n";
+      empty = true;
+    }if(state.season==""){
+      message="the season field cannot be empty\n";
+      empty = true;
+    }if(state.serviceLine==""){
+      message="the serviceLine field cannot be empty\n";
+      empty = true;
+    }if(state.activityArea==""){
+      message="the Business unit field cannot be empty\n";
+      empty = true;
+    }if(state.country==""){
+      message="the country field cannot be empty\n";
       empty = true;
     }
     if (empty){
@@ -345,7 +371,17 @@ export default function SimpleCard(props) {
           setTimeout(()=>{props.closeadd();}, 3000)
           
         })
-       .catch(alert);
+       .catch((aler)=>{
+        setUploadStatus({
+          status:"error",
+          message:"failure to send",
+          isEmpty:true,
+        });
+        setIsSend(false);
+        setEndSend(true);
+        alert(aler);
+        setTimeout(()=>{props.closeadd();}, 1000)
+       });
       })
       .catch((alert)=>{console.log("message"+alert)});
     }
@@ -408,7 +444,7 @@ export default function SimpleCard(props) {
                       <div style={{ width: 320 }}>
                         <TextField
                           required
-                          label="Document name"
+                          label={labelName}
                           className={classes.input}
                           fullWidth
                           onChange={(e)=>nameChange(e)}
@@ -422,24 +458,24 @@ export default function SimpleCard(props) {
                     <Grid container justify="center" spacing={2}>
                       <Grid item>
                         <Grid item xs={12}>
-                          <AutoComplete label="Customer" length={320} change={customerChange} values={suggestion.customer}/>
+                          <AutoComplete label="Customer" length={320} change={customerChange} values={suggestion.customer} isrequere={isrequere}/>
                         </Grid>
                       </Grid>
                       <Grid item>
-                      <AutoComplete label="Activity area" length={220} margin={40} change={activityAreaChange} values={suggestion.activityArea}/>
+                      <AutoComplete label="Business unit" length={220} margin={40} change={activityAreaChange} values={suggestion.activityArea} isrequere={true}/>
                       </Grid>
                     </Grid>
-                    <Grid container justify="center" spacing={2}>
+                    <Grid container justify="center" spacing={2} isrequere={true}>
                       <Grid item>
-                      <AutoComplete label="Service line" length={320} change={serviceLineChange} values={suggestion.servileLine}/>
+                      <AutoComplete label="Service line" length={320} change={serviceLineChange} values={suggestion.servileLine} isrequere={true}/>
                       </Grid>
                       <Grid item>
-                      <AutoComplete label="Country" length={220} margin={40} change={countryChange} values={suggestion.country}/>
+                      <AutoComplete label="Country" length={220} margin={40} change={countryChange} values={suggestion.country} isrequere={true}/>
                       </Grid>
                     </Grid>
                     <Grid container justify="begin" spacing={2}>
                       <Grid item>
-                      <AutoComplete label="Season" length={320} margin={30} change={seasonChange} values={suggestion.season}/>
+                      <AutoComplete label="Season" length={320} margin={30} change={seasonChange} values={suggestion.season} isrequere={true}/>
                       </Grid>
                       <Grid item>
                       {isPropal.gilad === true && (

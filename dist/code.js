@@ -211,7 +211,7 @@ function addMailSimple() {
         var html = HtmlService.createHtmlOutputFromFile("sidebar-about-page");
         SpreadsheetApp.getUi().showSidebar(html);
     }, doGet = function(e) {
-        return "admin" === e.parameter.st ? HtmlService.createHtmlOutputFromFile("documentadmin").setTitle("Base du secrétaria").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png") : HtmlService.createHtmlOutputFromFile("documents").setTitle("Base du secrétaria").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png");
+        return "admin" === e.parameter.st ? HtmlService.createHtmlOutputFromFile("documentadmin").setTitle("BD Sec").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png") : HtmlService.createHtmlOutputFromFile("documents").setTitle("BD Sec").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png");
     };
 }, function(module, __webpack_exports__, __webpack_require__) {
     "use strict";
@@ -380,10 +380,15 @@ function addMailSimple() {
     }, uploadFiles = function(e) {
         var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename), file = {
             title: e.filename,
-            mimeType: e.mimeType
-        }, fil = Drive.Files.insert(file, blob);
-        return Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize), DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW), 
-        {
+            mimeType: e.mimeType,
+            parents: [ {
+                id: "1FDGdAXrHz4bLkwWQ_l4-oeGuWWrqTZjW"
+            } ]
+        }, fil = Drive.Files.insert(file, blob, {
+            supportsAllDrives: !0
+        });
+        Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize);
+        return {
             fileId: fil.id,
             editeLink: fil.alternateLink,
             doanload: fil.webContentLink,
@@ -392,10 +397,22 @@ function addMailSimple() {
     }, uploadFileTest = function(e) {
         var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename), file = {
             title: e.filename,
-            mimeType: e.mimeType
-        }, fil = Drive.Files.insert(file, blob);
-        return Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize), DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW), 
-        {
+            mimeType: e.mimeType,
+            parents: [ {
+                id: "0AASP3gEC9AcfUk9PVA"
+            }, {
+                id: "1FDGdAXrHz4bLkwWQ_l4-oeGuWWrqTZjW"
+            } ]
+        }, fil = Drive.Files.insert(file, blob, {
+            supportsAllDrives: !0
+        });
+        Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize);
+        return Drive.Permissions.insert({
+            type: "anyone",
+            role: "reader"
+        }, fil.id, {
+            supportsAllDrives: !0
+        }), {
             fileId: fil.id,
             editeLink: fil.alternateLink,
             doanload: fil.webContentLink,
@@ -568,7 +585,9 @@ function addMailSimple() {
             if (Logger.log("identre" + id.toString() + "id  idsortir" + found.getValue().toString() + "id"), 
             found.getValue().toString() === id.toString()) {
                 var index = found.getRow(), fileId = targetSheet.getRange(index, 12).getValue();
-                Logger.log("index:" + index + " fileId " + fileId), targetSheet.deleteRow(index);
+                Logger.log("index:" + index + " fileId " + fileId), Drive.Files.remove(documents[0].fileId, {
+                    supportsAllDrives: !0
+                }), targetSheet.deleteRow(index);
             }
         }
         return "Done";
@@ -776,8 +795,9 @@ function addMailSimple() {
             email: getTab(suggestion, 6)
         };
     }, getHistoriqueSearch = function() {
-        var targetSheet = getSheet("Historique"), nomRows = targetSheet.getLastRow();
-        return targetSheet.getRange(1, 1, nomRows, 1).getValues().map((function(x) {
+        var targetSheet = getSheet("Historique"), nomRows = targetSheet.getLastRow(), indice = [];
+        return nomRows >= 1 && (indice = targetSheet.getRange(1, 1, nomRows, 1).getValues()), 
+        indice.map((function(x) {
             return {
                 name: x[0]
             };

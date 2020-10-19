@@ -38,6 +38,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import clsx from 'clsx';
 import Tooltip from '@material-ui/core/Tooltip';
+import Snackbar from './addDoc/Snackbar';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -169,8 +170,8 @@ export default function PersistentDrawerLeft() {
   };
 
   const [selectPage,setSelectPage]=React.useState("Page1");
-  const [userStatu,setUserStatu]= React.useState("Administrateur");
-  const [editCompte,setEditCompte]=React.useState(true);
+  const [userStatu,setUserStatu]= React.useState("Standart");
+  const [editCompte,setEditCompte]=React.useState(false);
   const [suggestion, setSuggestion] = React.useState({
     type: [],
     customer: [],

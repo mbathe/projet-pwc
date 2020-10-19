@@ -156,31 +156,46 @@ Logger.log(val);
  return data;
 */
 var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
-  var file = {
-    title: e.filename,
-    mimeType: e.mimeType
-  };
- var fil = Drive.Files.insert(file, blob);
- 
-  Logger.log('ID: %s, File size (bytes): %s', file.id, file.fileSize);
-  
-/*
-  var data={
-    fileId: fil.getId(),
-    editeLink: fil.getUrl(),
-    doanload:fil.getDownloadUrl(),
-    description:"https://lh3.googleusercontent.com/d/"+fil.getId()+"=s1000-p?authuser=0",
-  }
-  */
- DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK,DriveApp.Permission.VIEW);
+var file = {
+  title: e.filename,
+  mimeType: e.mimeType,
+  parents: [{id:'1FDGdAXrHz4bLkwWQ_l4-oeGuWWrqTZjW'}],
+};
+var fil = Drive.Files.insert(file, blob,{supportsAllDrives: true});
+// fil.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+Logger.log('ID: %s, File size (bytes): %s', file.id, file.fileSize);
 
- var data={
-  fileId: fil.id,
-  editeLink: fil.alternateLink,
-  doanload:fil.webContentLink,
-  description:"https://lh3.googleusercontent.com/d/"+fil.id+"=s1000-p?authuser=0",
+/*
+var data={
+  fileId: fil.getId(),
+  editeLink: fil.getUrl(),
+  doanload:fil.getDownloadUrl(),
+  description:"https://lh3.googleusercontent.com/d/"+fil.getId()+"=s1000-p?authuser=0",
 }
-return data;
+*/
+var permissions = 
+{
+ 'type': 'domain',
+ 'role': 'reader',
+ 'value': 'pwc.com',
+}
+
+/*
+
+Drive.Permissions.insert(
+   permissions,
+  fil.id,
+  {supportsAllDrives: true}
+);
+*/
+
+var data={
+fileId: fil.id,
+editeLink: fil.alternateLink,
+doanload:fil.webContentLink,
+description:"https://lh3.googleusercontent.com/d/"+fil.id+"=s1000-p?authuser=0",
+}
+return data; 
 
 
 }
@@ -188,12 +203,13 @@ return data;
 
 export const uploadFileTest = (e) =>{
   var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
-  var file = {
+  var file = {    
     title: e.filename,
-    mimeType: e.mimeType
+    mimeType: e.mimeType,
+    parents: [{id:'0AASP3gEC9AcfUk9PVA'},{id:'1FDGdAXrHz4bLkwWQ_l4-oeGuWWrqTZjW'}],
   };
- var fil = Drive.Files.insert(file, blob);
- 
+ var fil = Drive.Files.insert(file, blob,{supportsAllDrives: true});
+// fil.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   Logger.log('ID: %s, File size (bytes): %s', file.id, file.fileSize);
   
 /*
@@ -204,7 +220,23 @@ export const uploadFileTest = (e) =>{
     description:"https://lh3.googleusercontent.com/d/"+fil.getId()+"=s1000-p?authuser=0",
   }
   */
- DriveApp.getFileById(fil.id).setSharing(DriveApp.Access.ANYONE_WITH_LINK,DriveApp.Permission.VIEW);
+ var permissions = 
+ {
+   'type': 'anyone',
+   'role': 'reader',
+ }
+ /* 
+ Drive.Permissions.insert({ resource: permissions,
+  fileId: fil.id,
+  fields: 'id',});
+  */
+
+  Drive.Permissions.insert(
+     permissions,
+    fil.id,
+    {supportsAllDrives: true}
+  );
+
 
  var data={
   fileId: fil.id,
@@ -536,7 +568,7 @@ for(var i=2;i<=nomRows;i++){
       var index = found.getRow();
       var fileId = targetSheet.getRange(index,12).getValue();
       Logger.log("index:"+index +" fileId "+fileId);
-     // Drive.Files.remove(documents[0].fileId);
+      Drive.Files.remove(documents[0].fileId,{supportsAllDrives: true});
      targetSheet.deleteRow(index);
     }
     
@@ -989,9 +1021,14 @@ export const getSuggestion =()=>{
 
 export const  getHistoriqueSearch=()=>{
   var targetSheet = getSheet("Historique");
-  var nomRows = targetSheet.getLastRow();  
-  var indice = targetSheet.getRange(1,1,nomRows,1).getValues();
-   var historique =   indice.map((x)=>{
+  var nomRows = targetSheet.getLastRow(); 
+  var historique =[]; 
+  var indice =[];
+  if(nomRows>=1){
+    indice  = targetSheet.getRange(1,1,nomRows,1).getValues();
+  }
+  
+    historique =   indice.map((x)=>{
                return {name:x[0]}
                })
     return historique;

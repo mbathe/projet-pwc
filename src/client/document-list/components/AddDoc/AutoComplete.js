@@ -25,10 +25,11 @@ export default function Playground(props) {
         freeSolo
         onInputChange={(event, value, reason)=>change(value)}
         onChange={(event, value, reason)=>change(value)}
-        renderInput={(params) => <TextField {...params} label={props.label} margin="normal" />}
+        renderInput={(params) => <TextField {...params} label={props.label} margin="normal" required={props.isrequere}/>}
       />
     </div>
   );
+
 }
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
