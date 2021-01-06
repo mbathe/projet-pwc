@@ -79,7 +79,7 @@ export default function TestEditor() {
     {
       title: 'Statu',
       field: 'statu',
-      lookup: { 34: 'Administrateur', 63: 'Sécretaire' },
+      lookup: { 34: 'Administrateur', 63: 'Sécretaire', 35:'SuperAdmin', },
     },
   ];
 
@@ -119,6 +119,7 @@ export default function TestEditor() {
           server.addUser(newData)
           .then(()=>{
            setState((prevState) => {
+              console.log(newData);
               const data = [...prevState.data];
               data.unshift(newData);
               return { ...prevState, data };

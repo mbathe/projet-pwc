@@ -52,5 +52,10 @@ global.uploadFileTest = publicSheetFunctions.uploadFileTest;
 global.getHistoriqueSearch =publicSheetFunctions.getHistoriqueSearch;
 global.addHistorique  = publicSheetFunctions.addHistorique;
 global.addMailSimple = publicSheetFunctions.addMailSimple;
+global.signUp = publicSheetFunctions.signUp;
+global.sendVerificationCode = publicSheetFunctions.sendVerificationCode;
+global.confirmVerificationCode = publicSheetFunctions.confirmVerificationCode;
+global.getValStatu = publicSheetFunctions.getValStatu;
+global. getStatuVal = publicSheetFunctions. getStatuVal;
 
 

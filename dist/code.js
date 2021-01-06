@@ -95,6 +95,16 @@ function getHistoriqueSearch() {
 function addHistorique() {
 }
 function addMailSimple() {
+}
+function signUp() {
+}
+function sendVerificationCode() {
+}
+function confirmVerificationCode() {
+}
+function getValStatu() {
+}
+function getStatuVal() {
 }!function(e, a) {
     for (var i in a) e[i] = a[i];
 }(this, function(modules) {
@@ -173,7 +183,10 @@ function addMailSimple() {
         global.addNewSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["addNewSuggestion"], 
         global.addSuggestion = _sheets__WEBPACK_IMPORTED_MODULE_1__["addSuggestion"], global.uploadFileTest = _sheets__WEBPACK_IMPORTED_MODULE_1__["uploadFileTest"], 
         global.getHistoriqueSearch = _sheets__WEBPACK_IMPORTED_MODULE_1__["getHistoriqueSearch"], 
-        global.addHistorique = _sheets__WEBPACK_IMPORTED_MODULE_1__["addHistorique"], global.addMailSimple = _sheets__WEBPACK_IMPORTED_MODULE_1__["addMailSimple"];
+        global.addHistorique = _sheets__WEBPACK_IMPORTED_MODULE_1__["addHistorique"], global.addMailSimple = _sheets__WEBPACK_IMPORTED_MODULE_1__["addMailSimple"], 
+        global.signUp = _sheets__WEBPACK_IMPORTED_MODULE_1__["signUp"], global.sendVerificationCode = _sheets__WEBPACK_IMPORTED_MODULE_1__["sendVerificationCode"], 
+        global.confirmVerificationCode = _sheets__WEBPACK_IMPORTED_MODULE_1__["confirmVerificationCode"], 
+        global.getValStatu = _sheets__WEBPACK_IMPORTED_MODULE_1__["getValStatu"], global.getStatuVal = _sheets__WEBPACK_IMPORTED_MODULE_1__["getStatuVal"];
     }.call(this, __webpack_require__(1));
 }, function(module, exports) {
     var g;
@@ -211,7 +224,7 @@ function addMailSimple() {
         var html = HtmlService.createHtmlOutputFromFile("sidebar-about-page");
         SpreadsheetApp.getUi().showSidebar(html);
     }, doGet = function(e) {
-        return "admin" === e.parameter.st ? HtmlService.createHtmlOutputFromFile("documentadmin").setTitle("BD Sec").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png") : HtmlService.createHtmlOutputFromFile("documents").setTitle("BD Sec").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png");
+        return HtmlService.createHtmlOutputFromFile("documents").setTitle("BD Sec").setFaviconUrl("https://www.zupimages.net/up/20/41/5mpa.png");
     };
 }, function(module, __webpack_exports__, __webpack_require__) {
     "use strict";
@@ -227,8 +240,14 @@ function addMailSimple() {
         return getSheet;
     })), __webpack_require__.d(__webpack_exports__, "getUsers", (function() {
         return getUsers;
+    })), __webpack_require__.d(__webpack_exports__, "getValStatu", (function() {
+        return getValStatu;
     })), __webpack_require__.d(__webpack_exports__, "addUser", (function() {
         return addUser;
+    })), __webpack_require__.d(__webpack_exports__, "getStatuVal", (function() {
+        return getStatuVal;
+    })), __webpack_require__.d(__webpack_exports__, "signUp", (function() {
+        return signUp;
     })), __webpack_require__.d(__webpack_exports__, "setUser", (function() {
         return setUser;
     })), __webpack_require__.d(__webpack_exports__, "deleteUser", (function() {
@@ -305,6 +324,10 @@ function addMailSimple() {
         return addHistorique;
     })), __webpack_require__.d(__webpack_exports__, "addMailSimple", (function() {
         return addMailSimple;
+    })), __webpack_require__.d(__webpack_exports__, "sendVerificationCode", (function() {
+        return sendVerificationCode;
+    })), __webpack_require__.d(__webpack_exports__, "confirmVerificationCode", (function() {
+        return confirmVerificationCode;
     }));
     var getSheets = function() {
         return SpreadsheetApp.getActive().getSheets();
@@ -328,7 +351,7 @@ function addMailSimple() {
     }, getSheet = function(sheetName) {
         return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
     }, getUsers = function() {
-        var targetSheet = getSheet("Compte"), nomRows = targetSheet.getLastRow(), users = targetSheet.getRange(2, 1, nomRows - 1, 4).getValues(), user = {
+        var targetSheet = getSheet("Compte"), nomRows = targetSheet.getLastRow(), users = targetSheet.getRange(2, 1, nomRows - 1, 5).getValues(), user = {
             chargin: !0,
             data: []
         };
@@ -336,17 +359,28 @@ function addMailSimple() {
             return {
                 name: x[1],
                 email: x[2],
-                statu: "Administrateur" == x[3] ? 34 : 63
+                statu: getValStatu(x[3]),
+                password: x[4]
             };
         })), user;
+    }, getValStatu = function(statu) {
+        return "SuperAdmin" === statu ? 35 : "Administrateur" === statu ? 34 : 63;
     }, addUser = function(newData) {
         var targetSheet = getSheet("Compte");
         targetSheet.insertRowBefore(2);
         var id = targetSheet.getRange(3, 1).getValue();
-        return targetSheet.getRange(2, 1, 1, 4).setValues([ [ id + 1, newData.name, newData.email, newData.email ] ]), 
+        return targetSheet.getRange(2, 1, 1, 4).setValues([ [ id + 1, newData.name, newData.email, getStatuVal(newData.statu) ] ]), 
+        !0;
+    }, getStatuVal = function(val) {
+        return Logger.log(val), 35 == val ? "SuperAdmin" : 34 == val ? "Administrateur" : "Secrétaire";
+    }, signUp = function(newData) {
+        var targetSheet = getSheet("Compte");
+        targetSheet.insertRowBefore(2);
+        var id = targetSheet.getRange(3, 1).getValue();
+        return targetSheet.getRange(2, 1, 1, 5).setValues([ [ id + 1, newData.name, newData.email, "Secrétaire", newData.password ] ]), 
         !0;
     }, setUser = function(id, newData) {
-        return getSheet("Compte").getRange(id + 2, 2, 1, 3).setValues([ [ newData.name, newData.email, 34 == newData.statu ? "Administrateur" : "Secrétaire" ] ]), 
+        return getSheet("Compte").getRange(id + 2, 2, 1, 3).setValues([ [ newData.name, newData.email, getStatuVal(newData.statu) ] ]), 
         !0;
     }, deleteUser = function(id) {
         return getSheet("Compte").deleteRow(id + 2), !0;
@@ -387,8 +421,7 @@ function addMailSimple() {
         }, fil = Drive.Files.insert(file, blob, {
             supportsAllDrives: !0
         });
-        Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize);
-        return {
+        return Logger.log("ID: %s, File size (bytes): %s", file.id, file.fileSize), {
             fileId: fil.id,
             editeLink: fil.alternateLink,
             doanload: fil.webContentLink,
@@ -500,10 +533,11 @@ function addMailSimple() {
                 editionLien: x[15]
             });
         })), documents.data;
-    }, getStatu = function(user) {
-        var status = "Standart";
+    }, getStatu = function(email, password) {
+        var status = "notRegistered";
         return getUsers().data.map((function(oluser, index) {
-            oluser.email == user && (status = 34 == oluser.statu ? "Administrateur" : "Secrétaire");
+            oluser.email == email && oluser.password === password && (status = "Secrétaire", 
+            status = getStatuVal(oluser.statu));
         })), status;
     }, getSpecific = function(indexMax, type1, type2) {
         var targetSheet = getSheet("Data"), nomRows = targetSheet.getLastRow(), document = [];
@@ -820,5 +854,23 @@ function addMailSimple() {
         return email = suggestion.email, emaile.length > 0 && emaile.map((function(mail) {
             -1 == email.indexOf(mail) && addSuggestion(mail, 7);
         })), "Done";
+    }, sendVerificationCode = function(code, hascode, email) {
+        var targetSheet = getSheet("Compte"), isexist = !1, message = {
+            to: email,
+            subject: "Reset password",
+            htmlBody: "Verification code: <FONT color='blue'>" + code + "</FONT>",
+            name: "Password forgot",
+            attachments: []
+        };
+        return getUsers().data.map((function(user, index) {
+            user.email === email && targetSheet.getRange(index + 2, 3).getValue() === email && (isexist = !0, 
+            targetSheet.getRange(index + 2, 5).setValue(hascode), MailApp.sendEmail(message));
+        })), Logger.log(isexist), isexist;
+    }, confirmVerificationCode = function(code, email, newPassword) {
+        var targetSheet = getSheet("Compte"), correctCode = !1;
+        return getUsers().data.map((function(user, index) {
+            user.email === email && targetSheet.getRange(index + 2, 3).getValue() === email && targetSheet.getRange(index + 2, 5).getValue() === code && (correctCode = !0, 
+            targetSheet.getRange(index + 2, 5).setValue(newPassword));
+        })), correctCode;
     };
 } ]));

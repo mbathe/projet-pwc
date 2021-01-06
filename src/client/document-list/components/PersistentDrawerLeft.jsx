@@ -144,7 +144,7 @@ function Bouton(props) {
     );
   }
 
-export default function PersistentDrawerLeft() {
+export default function PersistentDrawerLeft(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [searchVal,setSearchVal]=React.useState("doc");
@@ -170,8 +170,8 @@ export default function PersistentDrawerLeft() {
   };
 
   const [selectPage,setSelectPage]=React.useState("Page1");
-  const [userStatu,setUserStatu]= React.useState("Standart");
-  const [editCompte,setEditCompte]=React.useState(false);
+  const [userStatu,setUserStatu]= React.useState(props.statu);
+  const [editCompte,setEditCompte]=React.useState(props.editCompte);
   const [suggestion, setSuggestion] = React.useState({
     type: [],
     customer: [],
@@ -283,7 +283,7 @@ export default function PersistentDrawerLeft() {
     <ThemeProvider theme={theme}>
     <div className={classes.root}>
       <CssBaseline />
-      <SearchAppBar  changeFilter={setStateFilter} setStatu={(valeur)=>{setUserStatu(valeur)}} handleDrawerOpen={handleDrawerOpen} open={open} search={changeValueSearch} setPage={setPage} prevPage={prevPage} suggestion={suggestion} suggestionSelect={suggestionSelect} resetFilter={resetFilter} setEditCompte={(val)=>{setEditCompte(val)}}/>
+      <SearchAppBar  changeFilter={setStateFilter} setStatu={(valeur)=>{setUserStatu(valeur)}} handleDrawerOpen={handleDrawerOpen} open={open} search={changeValueSearch} setPage={setPage} prevPage={prevPage} suggestion={suggestion} suggestionSelect={suggestionSelect} resetFilter={resetFilter} setEditCompte={(val)=>{setEditCompte(val)}} email={props.email}/>
      <Drawer
         className={classes.drawer}
         variant="persistent"

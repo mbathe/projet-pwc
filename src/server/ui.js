@@ -26,14 +26,10 @@ export const openAboutSidebar = () => {
   SpreadsheetApp.getUi().showSidebar(html);
 };
 
-export const doGet =(e)=>{
- // return HtmlService.createHtmlOutputFromFile('documents').setTitle('Base du secrétaria').setFaviconUrl('https://www.zupimages.net/up/20/41/5mpa.png');
- if (e.parameter.st==="admin"){
-    return HtmlService.createHtmlOutputFromFile('documentadmin').setTitle('BD Sec').setFaviconUrl('https://www.zupimages.net/up/20/41/5mpa.png');
+export const doGet = e => {
+  // return HtmlService.createHtmlOutputFromFile('documents').setTitle('Base du secrétaria').setFaviconUrl('https://www.zupimages.net/up/20/41/5mpa.png');
 
-  }else {
-      return HtmlService.createHtmlOutputFromFile('documents').setTitle('BD Sec').setFaviconUrl('https://www.zupimages.net/up/20/41/5mpa.png');
-
-  };
-
-}
+  return HtmlService.createHtmlOutputFromFile('documents')
+    .setTitle('BD Sec')
+    .setFaviconUrl('https://www.zupimages.net/up/20/41/5mpa.png');
+};

@@ -7,6 +7,6 @@ import MyPage from './components/test'
 import Setting from './components/Pages/Setting'
 import SearchPage from './components/Pages/SearchPage'
 
+import App from './components/App'
 
-
-ReactDOM.render(<PersistentDrawerLeft />, document.getElementById('index'));
+ReactDOM.render(<App />, document.getElementById('index'));

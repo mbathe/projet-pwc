@@ -222,7 +222,7 @@ export default function GmailTreeView(props) {
 
      {props.editCompte ==true && <Divider />} 
 
-      {props.editCompte==true && props.userStatu=="Administrateur" && <StyledTreeItem nodeId="4" labelText="Setting" labelIcon={SettingsIcon}  setPage={props.setPage}/>}
+      {props.editCompte==true && props.userStatu=="SuperAdmin" && <StyledTreeItem nodeId="4" labelText="Setting" labelIcon={SettingsIcon}  setPage={props.setPage}/>}
     </TreeView>
   
   );

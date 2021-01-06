@@ -234,7 +234,7 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
     });
 
     server.
-    getStatu(response.profileObj.email)
+    getStatu(response.profileObj.email,"password")
     .then((val)=>{
       console.log(val);
       if(val==="Administrateur" || val==="Secrétaire"){
@@ -253,7 +253,7 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
     .catch(alert);
 
     server.
-    getNotification(response.profileObj.email)
+    getNotification(props.email)
     .then((val)=>{
       console.log(val);
      setNotification(val);
@@ -410,9 +410,11 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
         onInputChange={change}
          renderInput={(params) => (
            <div style={{ display: "flex" }} ref={params.InputProps.ref}>
-             <div style={{ paddingTop: 2 }}>
-               <According changeFilter={searchFilter} suggestion={props.suggestion} suggestionSelect={props.suggestionSelect} resetFilter={props.resetFilter}/>
-             </div>
+           <Tooltip title="Search">
+           <IconButton style={{ color: "white" }} onClick={search}>
+             <SearchIcon />
+           </IconButton>
+           </Tooltip>
              <TextField
                fullWidth
                {...params}
@@ -421,31 +423,18 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
                className={classes.inputInput}
                style={{ color: "white" }}
              />
-             <Tooltip title="Search">
-             <IconButton style={{ color: "white" }} onClick={search}>
-               <SearchIcon />
-             </IconButton>
-             </Tooltip>
+             <div style={{ paddingTop: 2 }}>
+             <According changeFilter={searchFilter} suggestion={props.suggestion} suggestionSelect={props.suggestionSelect} resetFilter={props.resetFilter}/>
+           </div>
            </div>
          )} 
        />
      </div>
-            {state.islogin == true && props.open==true &&<div className={classes.growopen2} />}
-            {state.islogin == true && props.open==false &&<div className={classes.grow} />}
-            {state.islogin == true && (
-              <div className={classes.sectionDesktop}>
-                <IconButton
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={notification} color="secondary">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-              </div>
-            )}
-            {state.islogin == true && <div className={classes.growe} />}
-            {state.islogin == false && <div className={classes.grow} />}
+            {state.islogin == false && props.open==true &&<div className={classes.growopen2} />}
+            {state.islogin == false && props.open==false &&<div className={classes.grow} />}
+            
+            {state.islogin == false && <div className={classes.growe} />}
+            {state.islogin == true && <div className={classes.grow} />}
             <div className={classes.sectionMobile}>
               <IconButton
                 aria-label="show more"
@@ -457,23 +446,24 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
                 <MoreIcon />
               </IconButton>
             </div>
-            {state.islogin == true && (
+            {state.islogin == false && (
               <div className={classes.sectionDesktop}>
-              <Tooltip title={<div><Typography fontSize = {14}  variant='body2'>Compte Google</Typography><Typography fontSize = {8}  variant='body2' color='textSecondary'>{state.name}</Typography><Typography fontSize = {8}  variant='body2' color='textSecondary'>{state.email}</Typography></div>} className={classes.tooltip}>
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleMobileMenuOpen}
-                  color="inherit"
-                >
-                  <Avatar alt="Cindy Baker" src={state.imageUrl} />
-                </IconButton>
-                </Tooltip>
-              </div>
+              <IconButton
+                aria-label="show 17 new notifications"
+                color="inherit"
+              >
+                <Badge badgeContent={notification} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            </div>
+            
             )}
             {state.islogin === false && (
+              
+              <Typography variant="caption" display="block" gutterBottom>
+           {props.email}
+          </Typography>)/*(
               <GoogleLogin
                 clientId="102524147780-qspuuvgpgetinr8ppra852crd4t4lh08.apps.googleusercontent.com"
                 render={renderProps => (
@@ -482,7 +472,7 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
                     onClick={renderProps.onClick}
                     disabled={renderProps.disabled}
                   >
-                    Login
+                    Login 
                   </Button>
                 )}
                 buttonText="Login"
@@ -490,7 +480,7 @@ const [historiqueSearch,setHistoriqueSearch] =React.useState([]);
                 onFailure={responseGoogle}
                 cookiePolicy={'single_host_origin'}
               />
-            )}
+                )*/}
           </Toolbar>
         </AppBar>
       </div>

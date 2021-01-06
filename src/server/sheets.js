@@ -43,7 +43,7 @@ export const getSheet = (sheetName) =>{
 export const getUsers = () =>{
   var targetSheet = getSheet("Compte");
   var nomRows = targetSheet.getLastRow();
-  var users =  targetSheet.getRange(2,1,nomRows-1,4).getValues();
+  var users =  targetSheet.getRange(2,1,nomRows-1,5).getValues();
   var user={
     chargin:true,
     data:[]
@@ -52,25 +52,53 @@ export const getUsers = () =>{
      return {
       name : x[1],
       email : x[2],
-      statu :x[3]== "Administrateur" ? 34 : 63,
+      statu : getValStatu(x[3]),
+      password:x[4]
       }
   });
   return user;
 } 
 
+export const getValStatu = (statu)=>{
+
+  if(statu==="SuperAdmin"){
+    return 35;
+  }else{
+    const val = statu ==="Administrateur"? 34 : 63;
+    return val;
+  }
+}
 
 export const addUser = (newData) =>{
   var targetSheet = getSheet("Compte");
   targetSheet.insertRowBefore(2);
   var id = targetSheet.getRange(3,1).getValue();
-  targetSheet.getRange(2,1,1,4).setValues([[id+1,newData.name,newData.email,newData.email]]);
+  targetSheet.getRange(2,1,1,4).setValues([[id+1,newData.name,newData.email, getStatuVal(newData.statu)]]);
   return true;
 }
 
+export const getStatuVal =(val) =>{
+  Logger.log(val);
+  if(val==35){
+    return "SuperAdmin";
+  }else{
+   const valeur = (val == 34? "Administrateur" : "Secrétaire");
+   return valeur;
+  }
+
+}
+
+export const signUp = (newData) =>{
+  var targetSheet = getSheet("Compte");
+  targetSheet.insertRowBefore(2);
+  var id = targetSheet.getRange(3,1).getValue();
+  targetSheet.getRange(2,1,1,5).setValues([[id+1,newData.name,newData.email,"Secrétaire", newData.password]]);
+  return true;
+}
 
 export const setUser = (id,newData) =>{
   var targetSheet = getSheet("Compte");
-  targetSheet.getRange(id+2,2,1,3).setValues([[newData.name,newData.email,newData.statu == 34? "Administrateur" : "Secrétaire"]]);
+  targetSheet.getRange(id+2,2,1,3).setValues([[newData.name,newData.email,getStatuVal(newData.statu)]]);
   return true;
 }
 
@@ -154,7 +182,10 @@ Logger.log(val);
     description:"https://lh3.googleusercontent.com/d/"+file.getId()+"=s1000-p?authuser=0",
   }
  return data;
+
 */
+
+// Partie PwC 
 var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
 var file = {
   title: e.filename,
@@ -165,6 +196,7 @@ var fil = Drive.Files.insert(file, blob,{supportsAllDrives: true});
 // fil.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 Logger.log('ID: %s, File size (bytes): %s', file.id, file.fileSize);
 
+// Partie PwC
 /*
 var data={
   fileId: fil.getId(),
@@ -173,21 +205,9 @@ var data={
   description:"https://lh3.googleusercontent.com/d/"+fil.getId()+"=s1000-p?authuser=0",
 }
 */
-var permissions = 
-{
- 'type': 'domain',
- 'role': 'reader',
- 'value': 'pwc.com',
-}
 
-/*
 
-Drive.Permissions.insert(
-   permissions,
-  fil.id,
-  {supportsAllDrives: true}
-);
-*/
+
 
 var data={
 fileId: fil.id,
@@ -423,12 +443,13 @@ export const  datafiltere =(filter)=>{
 
 
 
- export const getStatu = (user)=>{
-  var status="Standart";
+ export const getStatu = (email, password)=>{
+  var status="notRegistered";
   var users =getUsers();
-  users.data.map((oluser,index)=>{
-    if(oluser.email==user){
-    status=oluser.statu==34? "Administrateur":"Secrétaire";
+  users.data.map((oluser,index)=>{ 
+    if(oluser.email==email && oluser.password===password){
+      status="Secrétaire";
+      status= getStatuVal(oluser.statu);
      }
    });
    return status;
@@ -1070,3 +1091,46 @@ export const  getHistoriqueSearch=()=>{
       }
       return "Done";
     }
+
+
+  export  const sendVerificationCode =(code,hascode,email)=>{
+      var targetSheet = getSheet("Compte");
+      var isexist = false;
+      var msg="Verification code: <FONT color='blue'>"+code+"</FONT>";
+      var message = {
+      to: email,
+      subject: "Reset password",
+      htmlBody: msg,
+      name: "Password forgot",
+      attachments: []
+    };
+      getUsers().data.map((user,index)=>{
+        if(user.email===email && targetSheet.getRange(index+2,3).getValue()===email){
+          isexist = true;
+          targetSheet.getRange(index+2,5).setValue(hascode);
+          MailApp.sendEmail(message);
+        }
+      })   
+      Logger.log(isexist);
+  
+      return isexist;
+  
+  // 
+  }
+ export const confirmVerificationCode =(code,email,newPassword)=>{
+      var targetSheet = getSheet("Compte");
+      var correctCode = false;
+      getUsers().data.map((user,index)=>{
+        if(user.email===email && targetSheet.getRange(index+2,3).getValue()===email){
+          if(targetSheet.getRange(index+2,5).getValue()===code){
+            correctCode = true;
+            targetSheet.getRange(index+2,5).setValue(newPassword);
+          }
+          
+        }
+      })   
+     
+      return correctCode;
+  
+  // 
+  }

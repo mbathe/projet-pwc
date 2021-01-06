@@ -34,7 +34,7 @@ export default function PopperPopupState(props) {
           <ArrowDropDownIcon />
         </IconButton>
         </Tooltip>
-          <Popper {...bindPopper(popupState)} transition placement="bottom-start"  modifiers={{
+          <Popper {...bindPopper(popupState)} transition placement="bottom-end"  modifiers={{
             flip: {
               enabled: true,
             },
